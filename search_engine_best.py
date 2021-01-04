@@ -1,7 +1,7 @@
 import pandas as pd
 
 import utils
-from parser_classes.new_parser_v2_adjustments.parser_module import Parse
+from parser_classes.parser_module import Parse
 from indexer import Indexer
 from searcher import Searcher
 from reader import ReadFile
@@ -40,7 +40,7 @@ class SearchEngine:
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         print('Finished parsing and indexing.')
-        self._indexer.empty_postings_files_to_disc()
+        self._indexer.post_process()
         # todo add entity processing and big - small words processing and whatever else is needed before saving
         # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
 
@@ -81,9 +81,8 @@ class SearchEngine:
         return searcher.search(query)
 
 
-def main(corpus_path, output_path, stemming, queries, num_docs_to_retrieve):
-    utils.create_parent_dir(output_path)
-    config = ConfigClass(corpus_path, output_path, stemming)
+def main():
+    config = ConfigClass()
 
     # create parent directories for postings
     utils.create_parent_dir(config.get_stemming_dir_path())
@@ -93,20 +92,15 @@ def main(corpus_path, output_path, stemming, queries, num_docs_to_retrieve):
     se = SearchEngine(config)
     se.build_index_from_parquet(config.get_corpusPath())
     # se.load_index?
-    if type(queries) is str:  # queries could be a text file path or a list of queries
-        queries = utils.read_from_txt_file(queries)
-    if num_docs_to_retrieve > 2000:
-        num_docs_to_retrieve = 2000
+    # if num_docs_to_retrieve > 2000:
+    #     num_docs_to_retrieve = 2000
 
     #  now answering queries given.
     answers_tuples = []
-    for i in range(len(queries)):
-        ranked_docs_lst_of_lsts = se.search(query=queries[i])
-        if ranked_docs_lst_of_lsts is None:  # todo should remove later
-            continue
-        for doc_posting in ranked_docs_lst_of_lsts:
-            print("Tweet id: {} Score: {}".format(doc_posting[0], doc_posting[4]))
-            # doc_posting.append(i+1)
-            # answers_tuples.append(doc_posting)
+    # for i in range(len(queries)):
+    n_res,res = se.search('Gates')
+    print("Tweet id: {}".format(res))
+    #         # doc_posting.append(i+1)
+    #         # answers_tuples.append(doc_posting)
 
     # IO_handler.write_answers_to_csv(answers_tuples,'results.csv')

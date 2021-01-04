@@ -36,7 +36,7 @@ class Ranker:
         :param k: Number of top document to return
         :return: list of relevant document
         """
-        return sorted_relevant_doc[:k]
+        return k,sorted_relevant_doc[:k][0][0]
 
     def Wiq_mul_wij(self, doc_id, q_term, doc_max_tf):
             tf_idf = self.tf_idf(self.query_terms[q_term][1][doc_id],doc_max_tf,self.query_terms[q_term][0])

@@ -1,5 +1,8 @@
+import os
+
+
 class ConfigClass:
-    def __init__(self, corpus_path, output_path, stemming):
+    def __init__(self):
         # link to a zip file in google drive with your pretrained model
         self._model_url = None
         '''
@@ -12,11 +15,11 @@ class ConfigClass:
         '''
         self._download_model = False
 
-        self.corpusPath = corpus_path
-        self.savedFileMainFolder = output_path
-        self.saveFilesWithStem = self.savedFileMainFolder + "\\WithStem"
+        self.corpusPath = os.path.join('data', 'benchmark_data_train.snappy.parquet')
+        self.savedFileMainFolder = ''
+        self.saveFilesWithStem = self.savedFileMainFolder + "WithStem"
         # self.saveFilesWithoutStem = self.savedFileMainFolder + "\\WithoutStem"
-        self.toStem = stemming
+        self.toStem = True
 
         self.terms_postings_path = self.saveFilesWithStem + "\\term_postings"
         self.tweets_postings_path = self.saveFilesWithStem + "\\tweet_postings"
@@ -49,3 +52,6 @@ class ConfigClass:
 
     def get_stemming_dir_path(self):
         return self.saveFilesWithStem
+
+    def get_output_path(self):
+        return self.savedFileMainFolder

@@ -1,5 +1,5 @@
 # DO NOT MODIFY CLASS NAME
-from string import ascii_lowercase, digits
+from string import ascii_lowercase, digits, ascii_uppercase
 
 import utils
 
@@ -14,7 +14,7 @@ class Indexer:
         # responsible for holding postings in disc and memory
         self.character_to_postings_file = dict()  # maps character to character postings file in memory
 
-        self.special_characters = ascii_lowercase + digits + '#' + '@' + '~'  # ~ stands for anything other than the rest
+        self.special_characters = ascii_lowercase + ascii_uppercase + digits + '#' + '@' + '~'  # ~ stands for anything other than the rest
         for character in self.special_characters:
             self.character_to_postings_file[character] = [dict(), 0]
             # character_full_path = IO_handler.get_dir_file(terms_dir_name,character)
@@ -54,10 +54,10 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
-        indexes = utils.load_obj(name='indexes',path=fn)
+        indexes = utils.load_obj(name='indexes', path=fn)
         self.terms_index = indexes[0]
         self.tweets_index = indexes[1]
-        return self.terms_index,self.tweets_index
+        return self.terms_index, self.tweets_index
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -67,7 +67,7 @@ class Indexer:
         Input:
               fn - file name of pickled index.
         """
-        utils.save_obj(obj=(self.terms_index,self.tweets_index),name='indexes',path=fn)
+        utils.save_obj(obj=(self.terms_index, self.tweets_index), name='indexes', path=fn)
 
     def index_all_terms(self, document):
         """
@@ -177,3 +177,61 @@ class Indexer:
 
     def get_config(self):
         return self.config
+
+    def post_process(self):
+        self.empty_postings_files_to_disc()
+        self.enforce_parsing_rules()
+
+    def enforce_parsing_rules(self):
+        """
+        rid of every term that has appeared only once (therefore enforcing the entities
+        rule that an entity exists only if it has appeared twice), and also check if the term has appeared in a
+        lower-case form in the past
+        """
+        # enforce_parsing_rules_for_terms_index()
+        unified_terms = dict()
+        character_to_deleted_terms = dict()
+        special_characters_no_upper_case = ascii_lowercase + digits + '#' + '@' + '~'
+        for character in special_characters_no_upper_case:
+            character_to_deleted_terms[character] = set()
+            unified_terms[character] = set()
+
+        for term in self.terms_index.keys():
+            if term[0].isalpha() and term.capitalize() in self.terms_index.keys() and term.lower() in self.terms_index.keys():
+                upper_case_term = term.capitalize()
+                lower_case_term = term.lower()
+                self.terms_index[lower_case_term][0] += self.terms_index[upper_case_term][0]
+                self.terms_index[lower_case_term][1] += self.terms_index[upper_case_term][1]
+                unified_terms[lower_case_term[0]].add(lower_case_term)
+
+            elif self.terms_index[term][1] == 1:  # appears at least twice if it enters first if statement
+                # save the term to delete from postings later
+                if term[0] not in self.special_characters:
+                    character_to_deleted_terms['~'].add(term)
+                else:
+                    character_to_deleted_terms[term[0].lower()].add(term)
+
+        for character in special_characters_no_upper_case:
+            unified_terms_for_char = unified_terms[character]
+            deleted_terms_for_char = character_to_deleted_terms[character]
+            if len(unified_terms_for_char) != 0 or len(deleted_terms_for_char) != 0:
+                postings_file_for_char = utils.load_obj(character, self.terms_dir_name)
+                if character.isalpha():
+
+                    for unified_term in unified_terms_for_char:
+                        lower_case_term = unified_term.lower()
+                        upper_case_term = unified_term.capitalize()
+                        del self.terms_index[upper_case_term]
+                        for doc_id in postings_file_for_char[upper_case_term].keys():
+                            if doc_id not in postings_file_for_char[lower_case_term].keys():
+                                postings_file_for_char[lower_case_term][doc_id] = 0
+                            postings_file_for_char[lower_case_term][doc_id] += postings_file_for_char[upper_case_term][doc_id]
+                        del postings_file_for_char[upper_case_term]
+                        print(postings_file_for_char[lower_case_term])
+
+                for deleted_term in deleted_terms_for_char:
+                    try:
+                        del self.terms_index[deleted_term]
+                        del postings_file_for_char[deleted_term]
+                    except:
+                        print(deleted_term)

@@ -7,15 +7,15 @@ class NumberTokenizer(iTokenizer):
 
     def tokenize(self, token) -> list:
         number_content = []
-        if token.__contains__(','):  # 10,000
+        if ',' in token:  # 10,000
             token = token.replace(',', '')
         if (token.__contains__('.') and token.__contains__('/')) or token.__contains__('-'):  # mikre katza 4.5/6
             return number_content
         if token.__contains__('.'):
             if token.find('.') == 0:
-                number_content = [token]  # .05
+                number_content = ['0' + token]  # .05
             elif int(token[0:token.find('.')]) > 1000:  # 1250.5
-                number_content = self.number_to_magnitude(int(token[0:token.find('.')]))
+                number_content = [self.number_to_magnitude(int(token[0:token.find('.')]))]
             else:
                 number_content = [token]  # 14.5
         elif token.__contains__('/'):  # 3/4

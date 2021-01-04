@@ -17,7 +17,7 @@ class SymbolTokenizer(iTokenizer):
     def tokenize(self,token,next_token) -> list:
         if next_token in ['percent','percentage','percentile']:
            next_token = '%'
-        if next_token in ['$', '%'] or token == '@':
+        if next_token in ['$', '%']  or token == '@':
             token = [token + next_token]
         elif token == '#':
             token = [w.lower() for w in findall('[A-Z]?[a-z]+', next_token)]

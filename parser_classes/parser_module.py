@@ -1,6 +1,9 @@
+import re
+
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
+from parser_classes.EntityTokenizer import EntityTokenizer
 from parser_classes.NumberTokenizer import NumberTokenizer
 from parser_classes.SuffixTokenizer import SuffixTokenizer
 from parser_classes.SymbolTokenizer import SymbolTokenizer
@@ -39,7 +42,6 @@ class Parse:
         i = 0
         while i in range(len(text_tokens)):
             token = text_tokens[i]
-
             if not self.is_invalid_token(token):  # todo might add emojies later
                 if i < len(text_tokens) - 1 and self.is_symbol(token, text_tokens[i + 1]):
                     parsed_tokens += self.string_to_tokenizer['symbol'].tokenize(token, text_tokens[i + 1])
@@ -47,11 +49,15 @@ class Parse:
                 elif i < len(text_tokens) - 1 and self.has_special_suffix(token, text_tokens[i + 1]):
                     parsed_tokens += self.string_to_tokenizer['suffix'].tokenize(token, text_tokens[i + 1])
                     i += 1  # next token is not necessary anymore
+                elif i < len(text_tokens) - 1 and self.is_entity(token, text_tokens[i + 1]):
+                    parsed_tokens += self.string_to_tokenizer['entity'].tokenize(token, text_tokens[i + 1])
+                    i += 1  # next token is not necessary anymore
                 elif self.is_number(token):
                     parsed_tokens += self.string_to_tokenizer['number'].tokenize(token)
                 elif self.is_valid_token(token):
                     parsed_tokens += [token]
             i += 1
+        # if '.' in parsed_tokens:
         return [p_t for p_t in parsed_tokens if p_t not in self.stop_words]
 
     def parse_doc(self, doc_as_list):
@@ -85,7 +91,7 @@ class Parse:
             tokenized_text = self.stem.porter_stemmer(tokenized_text)
         term_dict = self.create_term_doc_dict(tokenized_text)
 
-        document = Document(tweet_id,tweet_id, tokenized_text, term_dict)
+        document = Document(tweet_id,tweet_date, tokenized_text, term_dict)
 
         return document
 
@@ -111,6 +117,7 @@ class Parse:
         tokenizers_dict['number'] = NumberTokenizer()
         tokenizers_dict['suffix'] = SuffixTokenizer()
         tokenizers_dict['URL'] = URLTokenizer()
+        tokenizers_dict['entity'] = EntityTokenizer()
         return tokenizers_dict
 
     def has_special_suffix(self, last_token, token):
@@ -118,7 +125,10 @@ class Parse:
             last_token[0:-2]) and token.isalpha()
 
     def is_valid_token(self, token):
-        return len(token) > 1 and search("[A-Z a-z 0-9]", token)
+        return re.match("^[A-Za-z0-9]*$", token) and re.match("^[A-Za-z0-9]*$", token[0])
 
     def is_invalid_token(self, token):
-        return token in self.useless_token_list
+        return token in self.useless_token_list or len(token) <= 1 or token.startswith(('/','.', '-'))
+
+    def is_entity(self, token, next_token):
+        return token[0].isupper() and next_token[0].isupper()
