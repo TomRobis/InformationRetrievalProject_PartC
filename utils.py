@@ -77,7 +77,7 @@ def unzip_file(file_path, target_dir):
 
 
 
-def get_dir_file(folder_name, file_name=''):
+def get_dir_file(folder_name, file_name=''):  #todo os.join
     routing_string = ""
     if folder_name:
         routing_string = folder_name
@@ -111,3 +111,4 @@ def write_answers_to_csv(answers_tuples,csv_path):
         for row in answers_tuples:
             row = [row[0],row[4],row[5]]
             csv_writer.writerow(row)
+

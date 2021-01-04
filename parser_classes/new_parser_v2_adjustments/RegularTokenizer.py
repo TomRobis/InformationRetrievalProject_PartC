@@ -4,7 +4,7 @@ from parser_classes.new_parser_v2_adjustments.NonTokenizingTokenizer import NonT
 class RegularTokenizer(NonTokenizingTokenizer):
 
     def __init__(self) -> None:
-        super().__init__(False)
+        super().__init__()
 
     def tokenize(self, token, next_token) -> list:
         return token

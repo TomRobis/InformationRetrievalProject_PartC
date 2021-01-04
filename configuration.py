@@ -1,5 +1,5 @@
 class ConfigClass:
-    def __init__(self):
+    def __init__(self, corpus_path, output_path, stemming):
         # link to a zip file in google drive with your pretrained model
         self._model_url = None
         '''
@@ -12,14 +12,14 @@ class ConfigClass:
         '''
         self._download_model = False
 
-        self.corpusPath = ''
-        self.savedFileMainFolder = ''
+        self.corpusPath = corpus_path
+        self.savedFileMainFolder = output_path
         self.saveFilesWithStem = self.savedFileMainFolder + "\\WithStem"
-        self.saveFilesWithoutStem = self.savedFileMainFolder + "\\WithoutStem"
-        self.toStem = False
+        # self.saveFilesWithoutStem = self.savedFileMainFolder + "\\WithoutStem"
+        self.toStem = stemming
 
-        self.terms_postings_path = self.savedFileMainFolder + "\\term_postings"
-        self.tweets_postings_path = self.savedFileMainFolder + "\\tweet_postings"
+        self.terms_postings_path = self.saveFilesWithStem + "\\term_postings"
+        self.tweets_postings_path = self.saveFilesWithStem + "\\tweet_postings"
         #  threshold for file sizes, relates to number of terms kept in each posting
         self.OPTIMAL_TERMS_FILE_SIZE = 100000
         self.OPTIMAL_TWEETS_FILE_SIZE = 100000
@@ -36,13 +36,16 @@ class ConfigClass:
         return self._download_model
 
     def get_terms_postings_path(self):
-        return self.term_postings_path
+        return self.terms_postings_path
 
     def get_tweets_postings_path(self):
-        return self.tweet_postings_path
+        return self.tweets_postings_path
 
     def get_terms_postings_file_size(self):
-        return self.tweet_postings_path
+        return self.OPTIMAL_TERMS_FILE_SIZE
 
-    def get_terms_postings_file_size(self):
-        return self.tweet_postings_path
+    def get_tweets_postings_file_size(self):
+        return self.OPTIMAL_TWEETS_FILE_SIZE
+
+    def get_stemming_dir_path(self):
+        return self.saveFilesWithStem

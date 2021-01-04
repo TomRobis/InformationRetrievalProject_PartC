@@ -1,3 +1,4 @@
+from re import search
 from ranker import Ranker
 import utils
 
@@ -12,8 +13,18 @@ class Searcher:
     def __init__(self, parser, indexer, model=None):
         self._parser = parser
         self._indexer = indexer
-        self._ranker = Ranker()
+        self._ranker = None
         self._model = model
+        self.config = indexer.get_config()
+        # indexes = self._indexer.load_index('indexes')
+        self.tweets_index = self._indexer.tweets_postings_file
+        self.terms_index = self._indexer.terms_index
+
+        self.terms_postings_files_dir = self.config.get_terms_postings_path()
+        self.tweets_postings_files_dir = self.config.get_tweets_postings_path()
+        self.OPTIMAL_TWEETS_FILE_SIZE = self.config.get_tweets_postings_file_size()
+
+        # self.spell = SpellChecker()
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -30,11 +41,16 @@ class Searcher:
             and the last is the least relevant result.
         """
         query_as_list = self._parser.parse_sentence(query)
+        if not query_as_list:
+            return []
+        term_doc_dict = self._parser.create_term_doc_dict(query_as_list)
 
-        relevant_docs = self._relevant_docs_from_posting(query_as_list)
-        n_relevant = len(relevant_docs)
-        ranked_doc_ids = Ranker.rank_relevant_docs(relevant_docs)
-        return n_relevant, ranked_doc_ids
+        q_max_tf = max(term_doc_dict.values())
+        query_tweets_postings,query_terms_postings,num_of_docs_in_corpus,q_Wiq_dict = self.relevant_docs_from_posting(query_as_list,term_doc_dict,q_max_tf)
+        self._ranker = Ranker(query_tweets_postings,query_terms_postings,num_of_docs_in_corpus,q_Wiq_dict)
+        ranked_docs_list_of_lists = self._ranker.rank_relevant_docs()
+        top_k_ranked_docs = self._ranker.retrieve_top_k(ranked_docs_list_of_lists) #todo fetch k from somewhere
+        return top_k_ranked_docs
 
 
     def relevant_docs_from_posting(self, parsed_query,term_doc_dict,q_max_tf): #todo fix parameters when switching to ranker_v1

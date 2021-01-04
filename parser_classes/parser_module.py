@@ -13,7 +13,7 @@ from re import search, split
 
 class Parse:
 
-    def __init__(self, stemming):
+    def __init__(self, stemming=True):
         self.stop_words = stopwords.words('english')
         self.stemming = stemming
         self.stem = Stemmer()
@@ -85,7 +85,7 @@ class Parse:
             tokenized_text = self.stem.porter_stemmer(tokenized_text)
         term_dict = self.create_term_doc_dict(tokenized_text)
 
-        document = Document(tweet_id, tweet_date, tokenized_text, term_dict)
+        document = Document(tweet_id,tweet_id, tokenized_text, term_dict)
 
         return document
 

@@ -29,8 +29,7 @@ class Ranker:
         except:
             raise ValueError()
 
-    @staticmethod
-    def retrieve_top_k(sorted_relevant_doc, k=1):
+    def retrieve_top_k(self,sorted_relevant_doc, k=1):
         """
         return a list of top K tweets based on their ranking from highest to lowest
         :param sorted_relevant_doc: list of all candidates docs.

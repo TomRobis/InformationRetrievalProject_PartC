@@ -14,7 +14,7 @@ from re import search, split
 
 class Parse:
 
-    def __init__(self, stemming):
+    def __init__(self, stemming=True):
         self.stop_words = stopwords.words('english')
         self.stemming = stemming
         self.stem = Stemmer()

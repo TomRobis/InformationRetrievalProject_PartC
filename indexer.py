@@ -8,8 +8,6 @@ class Indexer:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def __init__(self, config):
-        self.inverted_idx = {}
-        self.postingDict = {}
         self.config = config
         self.terms_index = dict()  # maps terms to their postings in disc
 
@@ -28,10 +26,10 @@ class Indexer:
         self.tweets_postings_file = dict()  # maps tweets to their relevant information
 
         self.terms_dir_name = config.get_terms_postings_path()
-        self.tweets_dir_name =config.get_tweets_postings_path()
+        self.tweets_dir_name = config.get_tweets_postings_path()
         #  threshold for file sizes, relates to number of tweets indexed
-        self.OPTIMAL_TERMS_FILE_SIZE = OPTIMAL_TERMS_FILE_SIZE
-        self.OPTIMAL_TWEETS_FILE_SIZE = OPTIMAL_TWEETS_FILE_SIZE
+        self.OPTIMAL_TERMS_FILE_SIZE = config.get_terms_postings_file_size()
+        self.OPTIMAL_TWEETS_FILE_SIZE = config.get_tweets_postings_file_size()
 
         self.term_postings_counter = 1
         self.tweets_postings_counter = 1
@@ -56,7 +54,10 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
-        raise NotImplementedError
+        indexes = utils.load_obj(name='indexes',path=fn)
+        self.terms_index = indexes[0]
+        self.tweets_index = indexes[1]
+        return self.terms_index,self.tweets_index
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -66,25 +67,7 @@ class Indexer:
         Input:
               fn - file name of pickled index.
         """
-        raise NotImplementedError
-
-    # feel free to change the signature and/or implementation of this function 
-    # or drop altogether.
-    def _is_term_exist(self, term):
-        """
-        Checks if a term exist in the dictionary.
-        """
-        return term in self.postingDict
-
-    # feel free to change the signature and/or implementation of this function 
-    # or drop altogether.
-    def get_term_posting_list(self, term):
-        """
-        Return the posting list from the index for a term.
-        """
-        return self.postingDict[term] if self._is_term_exist(term) else []
-
-
+        utils.save_obj(obj=(self.terms_index,self.tweets_index),name='indexes',path=fn)
 
     def index_all_terms(self, document):
         """
@@ -96,12 +79,10 @@ class Indexer:
         for term in document_dictionary.keys():
             term_freq_in_tweet = document_dictionary[term]
             # index the term.
-            self.index_term(term, document.tweet_id, term_freq_in_tweet)
+            self.index_term(term, term_freq_in_tweet)
             # keep max_tf updated
             max_tf = max(max_tf, term_freq_in_tweet)
         return max_tf
-
-
 
     def index_term(self, term, term_freq_in_tweet):
         """
@@ -167,7 +148,7 @@ class Indexer:
     # after indexing the terms, updates the tweet's information in the indexer.
     # if the postings file for the tweets is too large, it is moved to the disc and emptied in memory.
     def update_tweets_information(self, document, max_tf):
-        tweets_full_path = IO_handler.get_dir_file(self.tweets_dir_name, self.tweets_postings_counter)
+        tweets_full_path = utils.get_dir_file(self.tweets_dir_name, self.tweets_postings_counter)
         self.tweets_index[self.doc_id] = tweets_full_path  # update the tweets' index with the path
         self.tweets_postings_file[self.doc_id] = [document.tweet_id, document.tweet_date, max_tf,
                                                   len(document.term_doc_dictionary.keys())]
@@ -190,6 +171,9 @@ class Indexer:
                 self.merge_postings(character)
 
         #  write the remaining tweets postings to disc
-        tweets_postings_full_path = IO_handler.get_dir_file(self.tweets_dir_name, self.tweets_postings_counter)
+        tweets_postings_full_path = utils.get_dir_file(self.tweets_dir_name, self.tweets_postings_counter)
         self.tweets_index[self.doc_id] = tweets_postings_full_path
         utils.save_obj(self.tweets_postings_file, str(self.tweets_postings_counter), self.tweets_dir_name)
+
+    def get_config(self):
+        return self.config
