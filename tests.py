@@ -15,6 +15,8 @@ from parser_classes import parser_module
 #
 # print('@'.islower())
 
-a = 'every'
-b = a[0].upper() + a[1:]
-print(a,b)
+a = set()
+b = set()
+a.add('c')
+b.add('c')
+print(any(i in a for i in b))

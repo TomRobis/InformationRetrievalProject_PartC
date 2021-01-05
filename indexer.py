@@ -216,7 +216,7 @@ class Indexer:
         """
         for term in self.terms_index.keys():
             lower_case_term = term[0].lower() + term[1:]
-            upper_case_term = term.capitalize()
+            upper_case_term = term[0].upper() + term[1:]
             if term[0].isalpha() and upper_case_term in self.terms_index.keys() and lower_case_term in self.terms_index.keys():
                 self.terms_index[lower_case_term][0] += self.terms_index[upper_case_term][0]
                 self.terms_index[lower_case_term][1] += self.terms_index[upper_case_term][1]
@@ -224,7 +224,7 @@ class Indexer:
 
             elif self.terms_index[term][1] == 1:  # appears at least twice if it enters first if statement
                 # save the term to delete from postings later
-                if term[0] not in self.special_characters:
+                if term[0] not in (self.special_characters + ascii_uppercase):
                     character_to_deleted_terms['~'].add(term)
                 else:
                     character_to_deleted_terms[term[0].lower()].add(term)
@@ -241,18 +241,24 @@ class Indexer:
         for character in special_characters_no_upper_case:
             unified_terms_for_char = unified_terms[character]
             deleted_terms_for_char = character_to_deleted_terms[character]
+
             if len(unified_terms_for_char) == 0 and len(deleted_terms_for_char) == 0:
                 continue
             postings_file_for_char = utils.load_obj(character, self.terms_dir_name)
             if character.isalpha():
                 self.unify_terms(postings_file_for_char,unified_terms_for_char)
+            # for term_to_remove in deleted_terms_for_char:
+            #     lower_case_term = term_to_remove[0].lower() + term_to_remove[1:]
+            #     upper_case_term = term_to_remove[0].upper() + term_to_remove[1:]
+            #     if lower_case_term not in postings_file_for_char.keys() and upper_case_term not in postings_file_for_char.keys():
+            #         print('win')
             self.remove_terms_with_one_appearance_in_corpus(postings_file_for_char,deleted_terms_for_char)
-
 
     def unify_terms(self, postings_file_for_char, unified_terms_for_char):
         for unified_term in unified_terms_for_char:
             lower_case_term = unified_term[0].lower() + unified_term[1:]
-            upper_case_term = unified_term.capitalize()
+            upper_case_term = unified_term[0].upper() + unified_term[1:]
+
             for doc_id in postings_file_for_char[upper_case_term].keys():
                 if doc_id not in postings_file_for_char[lower_case_term].keys():
                     postings_file_for_char[lower_case_term][doc_id] = 0
@@ -260,16 +266,22 @@ class Indexer:
             del self.terms_index[upper_case_term]
             del postings_file_for_char[upper_case_term]
 
-    def remove_terms_with_one_appearance_in_corpus(self, postings_file_for_char,deleted_terms_for_char):
-        try:
-            for term_to_remove in deleted_terms_for_char:
+    def remove_terms_with_one_appearance_in_corpus(self, postings_file,deleted_terms):
+        was_deleted = set()
+        for term_to_remove in deleted_terms:
+            try:
                 lower_case_term = term_to_remove[0].lower() + term_to_remove[1:]
-                upper_case_term = term_to_remove.capitalize()
+                upper_case_term = term_to_remove[0].upper() + term_to_remove[1:]
                 if lower_case_term in self.terms_index.keys():
                     del self.terms_index[lower_case_term]
-                    del postings_file_for_char[lower_case_term]
+                    del postings_file[lower_case_term]
                 else:
                     del self.terms_index[upper_case_term]
-                    del postings_file_for_char[upper_case_term]
-        except:
-            print(term_to_remove)
+                    del postings_file[upper_case_term]
+                was_deleted.add(term_to_remove)
+            except:
+                print(term_to_remove)
+                print(lower_case_term in was_deleted or upper_case_term in was_deleted)
+                continue
+
+
