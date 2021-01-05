@@ -17,8 +17,6 @@ class Indexer:
         self.special_characters = ascii_lowercase + digits + '#' + '@' + '~'  # ~ stands for anything other than the rest
         for character in self.special_characters:
             self.character_to_postings_file[character] = [dict(), 0]
-            # character_full_path = IO_handler.get_dir_file(terms_dir_name,character)
-            # IO_handler.from_dic_to_json(dict(),character_full_path)
             utils.save_obj(dict(), character, config.get_terms_postings_path())
 
         #  responsible for saving tweets' information in disc and memory
@@ -196,14 +194,13 @@ class Indexer:
         """
         unified_terms = dict()
         character_to_deleted_terms = dict()
-        special_characters_no_upper_case = ascii_lowercase + digits + '#' + '@' + '~'
         for character in self.special_characters:
             character_to_deleted_terms[character] = set()
             unified_terms[character] = set()
 
         unified_terms, character_to_deleted_terms = self.collect_terms_that_dissatisfy_rules(unified_terms,
                                                                                              character_to_deleted_terms)
-        self.enforce_parsing_rules_on_collected_terms(unified_terms, character_to_deleted_terms,special_characters_no_upper_case)
+        self.enforce_parsing_rules_on_collected_terms(unified_terms, character_to_deleted_terms)
 
     def collect_terms_that_dissatisfy_rules(self, unified_terms, character_to_deleted_terms):
         """
@@ -230,7 +227,7 @@ class Indexer:
                     character_to_deleted_terms[term[0].lower()].add(term)
         return unified_terms, character_to_deleted_terms
 
-    def enforce_parsing_rules_on_collected_terms(self, unified_terms, character_to_deleted_terms,special_characters_no_upper_case):
+    def enforce_parsing_rules_on_collected_terms(self, unified_terms, character_to_deleted_terms):
         """
         updates postings and terms_index according to data structures holding terms that required an update.
         performs deletions if necessary.
@@ -238,7 +235,7 @@ class Indexer:
          that has had its' lower case form united with its' upper case form.
         :param character_to_deleted_terms: set of every term that has appeared only once in the corpus.
         """
-        for character in special_characters_no_upper_case:
+        for character in self.special_characters:
             unified_terms_for_char = unified_terms[character]
             deleted_terms_for_char = character_to_deleted_terms[character]
             if len(unified_terms_for_char) == 0 and len(deleted_terms_for_char) == 0:
@@ -249,6 +246,13 @@ class Indexer:
             self.remove_terms_with_one_appearance_in_corpus(postings_file_for_char,deleted_terms_for_char)
 
     def unify_terms(self, postings_file_for_char, unified_terms_for_char):
+        """
+        This function is responsible for unifying posting files of terms with the same meaning but different way to be shown
+        we would like to save both terms as as single lower-case term.
+        At the end of the method, we delete the upper-case terms from inverted index and their postings
+        :param postings_file_for_char: dictionary of posting files for a specific character which the key is a term
+        :param unified_terms_for_char:  a list of terms which shown in two different ways with same meaning and we want to merge them to a single term
+        """
         for unified_term in unified_terms_for_char:
             lower_case_term = unified_term[0].lower() + unified_term[1:]
             upper_case_term = unified_term[0].upper() + unified_term[1:]
@@ -261,6 +265,11 @@ class Indexer:
             del postings_file_for_char[upper_case_term]
 
     def remove_terms_with_one_appearance_in_corpus(self, postings_file,deleted_terms):
+        """
+        remove terms with only one appearance in corpus from both the index and the postings file.
+        :param postings_file: postings file for a certain character.
+        :param deleted_terms: terms that need to be deleted from said posting file and terms_index.
+        """
         was_deleted = set()
         for term_to_remove in deleted_terms:
             lower_case_term = term_to_remove[0].lower() + term_to_remove[1:]
