@@ -241,17 +241,11 @@ class Indexer:
         for character in special_characters_no_upper_case:
             unified_terms_for_char = unified_terms[character]
             deleted_terms_for_char = character_to_deleted_terms[character]
-
             if len(unified_terms_for_char) == 0 and len(deleted_terms_for_char) == 0:
                 continue
             postings_file_for_char = utils.load_obj(character, self.terms_dir_name)
             if character.isalpha():
                 self.unify_terms(postings_file_for_char,unified_terms_for_char)
-            # for term_to_remove in deleted_terms_for_char:
-            #     lower_case_term = term_to_remove[0].lower() + term_to_remove[1:]
-            #     upper_case_term = term_to_remove[0].upper() + term_to_remove[1:]
-            #     if lower_case_term not in postings_file_for_char.keys() and upper_case_term not in postings_file_for_char.keys():
-            #         print('win')
             self.remove_terms_with_one_appearance_in_corpus(postings_file_for_char,deleted_terms_for_char)
 
     def unify_terms(self, postings_file_for_char, unified_terms_for_char):
@@ -269,19 +263,14 @@ class Indexer:
     def remove_terms_with_one_appearance_in_corpus(self, postings_file,deleted_terms):
         was_deleted = set()
         for term_to_remove in deleted_terms:
-            try:
-                lower_case_term = term_to_remove[0].lower() + term_to_remove[1:]
-                upper_case_term = term_to_remove[0].upper() + term_to_remove[1:]
-                if lower_case_term in self.terms_index.keys():
-                    del self.terms_index[lower_case_term]
-                    del postings_file[lower_case_term]
-                else:
-                    del self.terms_index[upper_case_term]
-                    del postings_file[upper_case_term]
-                was_deleted.add(term_to_remove)
-            except:
-                print(term_to_remove)
-                print(lower_case_term in was_deleted or upper_case_term in was_deleted)
-                continue
+            lower_case_term = term_to_remove[0].lower() + term_to_remove[1:]
+            upper_case_term = term_to_remove[0].upper() + term_to_remove[1:]
+            if lower_case_term in self.terms_index.keys():
+                del self.terms_index[lower_case_term]
+                del postings_file[lower_case_term]
+            else:
+                del self.terms_index[upper_case_term]
+                del postings_file[upper_case_term]
+            was_deleted.add(term_to_remove)
 
 
