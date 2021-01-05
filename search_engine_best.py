@@ -41,7 +41,6 @@ class SearchEngine:
             self._indexer.add_new_doc(parsed_document)
         print('Finished parsing and indexing.')
         self._indexer.post_process()
-        # todo add entity processing and big - small words processing and whatever else is needed before saving
         # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
         print('a')
 
