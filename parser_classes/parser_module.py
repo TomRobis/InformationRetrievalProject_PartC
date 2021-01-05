@@ -42,7 +42,7 @@ class Parse:
         i = 0
         while i in range(len(text_tokens)):
             token = text_tokens[i]
-            if not self.is_invalid_token(token):  # todo might add emojies later
+            if token not in self.useless_token_list:  # todo might add emojies later
                 if i < len(text_tokens) - 1 and self.is_symbol(token, text_tokens[i + 1]):
                     parsed_tokens += self.string_to_tokenizer['symbol'].tokenize(token, text_tokens[i + 1])
                     i += 1  # next token is not necessary anymore
@@ -57,8 +57,7 @@ class Parse:
                 elif self.is_valid_token(token):
                     parsed_tokens += [token]
             i += 1
-        # if '.' in parsed_tokens:
-        return [p_t for p_t in parsed_tokens if p_t not in self.stop_words]
+        return [p_t for p_t in parsed_tokens if not self.is_invalid_token(p_t)]
 
     def parse_doc(self, doc_as_list):
         """
@@ -128,7 +127,7 @@ class Parse:
         return re.match("^[A-Za-z0-9]*$", token) and re.match("^[A-Za-z0-9]*$", token[0])
 
     def is_invalid_token(self, token):
-        return token in self.useless_token_list or len(token) <= 1 or token.startswith(('/','.', '-'))
+        return token in self.stop_words or len(token) <= 1 or token.startswith(('/','.', '-'))
 
     def is_entity(self, token, next_token):
         return token[0].isupper() and next_token[0].isupper()

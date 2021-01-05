@@ -43,6 +43,7 @@ class SearchEngine:
         self._indexer.post_process()
         # todo add entity processing and big - small words processing and whatever else is needed before saving
         # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
+        print('lalala')
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.

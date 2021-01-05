@@ -1,44 +1,44 @@
-ERROR 2021-01-04 17:21:18,479: report_part_c.docx does not exist.
-INFO 2021-01-04 17:21:18,495: Successfully loaded benchmark labels data.
-INFO 2021-01-04 17:21:18,495: Successfully loaded queries data.
-ERROR 2021-01-04 17:21:18,495: search_engine_1.py does not exist.
-ERROR 2021-01-04 17:21:18,495: search_engine_2.py does not exist.
-INFO 2021-01-04 17:21:18,807: Successfully imported module search_engine_best.
-DEBUG 2021-01-04 17:21:23,272: Building the index in search_engine_best for benchmark data took 4.464079300000001 seconds.
-DEBUG 2021-01-04 17:21:23,287: search_engine_best successfully returned 1 results for the query 'bioweapon'.
-DEBUG 2021-01-04 17:21:23,319: search_engine_best successfully returned 1 results for query number 1.
-DEBUG 2021-01-04 17:21:23,350: search_engine_best successfully returned 1 results for query number 2.
-DEBUG 2021-01-04 17:21:23,366: search_engine_best successfully returned 1 results for query number 3.
-DEBUG 2021-01-04 17:21:23,381: search_engine_best successfully returned 1 results for query number 4.
-DEBUG 2021-01-04 17:21:23,397: search_engine_best successfully returned 1 results for query number 5.
-DEBUG 2021-01-04 17:21:23,397: search_engine_best successfully returned 1 results for query number 6.
-DEBUG 2021-01-04 17:21:23,412: search_engine_best successfully returned 1 results for query number 7.
-DEBUG 2021-01-04 17:21:23,428: search_engine_best successfully returned 1 results for query number 8.
-DEBUG 2021-01-04 17:21:23,444: search_engine_best successfully returned 1 results for query number 9.
-DEBUG 2021-01-04 17:21:23,444: search_engine_best successfully returned 1 results for query number 10.
-DEBUG 2021-01-04 17:21:23,459: search_engine_best successfully returned 1 results for query number 11.
-DEBUG 2021-01-04 17:21:23,491: search_engine_best successfully returned 1 results for query number 12.
-DEBUG 2021-01-04 17:21:23,506: search_engine_best successfully returned 1 results for query number 13.
-DEBUG 2021-01-04 17:21:23,506: search_engine_best successfully returned 1 results for query number 14.
-DEBUG 2021-01-04 17:21:23,522: search_engine_best successfully returned 1 results for query number 15.
-DEBUG 2021-01-04 17:21:23,537: search_engine_best successfully returned 1 results for query number 16.
-DEBUG 2021-01-04 17:21:23,553: search_engine_best successfully returned 1 results for query number 17.
-DEBUG 2021-01-04 17:21:23,553: search_engine_best successfully returned 1 results for query number 18.
-DEBUG 2021-01-04 17:21:23,569: search_engine_best successfully returned 1 results for query number 19.
-DEBUG 2021-01-04 17:21:23,569: search_engine_best successfully returned 1 results for query number 20.
-DEBUG 2021-01-04 17:21:23,584: search_engine_best successfully returned 1 results for query number 21.
-DEBUG 2021-01-04 17:21:23,616: search_engine_best successfully returned 1 results for query number 22.
-DEBUG 2021-01-04 17:21:23,616: search_engine_best successfully returned 1 results for query number 23.
-DEBUG 2021-01-04 17:21:23,631: search_engine_best successfully returned 1 results for query number 24.
-DEBUG 2021-01-04 17:21:23,631: search_engine_best successfully returned 1 results for query number 25.
-DEBUG 2021-01-04 17:21:23,647: search_engine_best successfully returned 1 results for query number 26.
-DEBUG 2021-01-04 17:21:23,662: search_engine_best successfully returned 1 results for query number 27.
-DEBUG 2021-01-04 17:21:23,662: search_engine_best successfully returned 1 results for query number 28.
-DEBUG 2021-01-04 17:21:23,678: search_engine_best successfully returned 1 results for query number 29.
-DEBUG 2021-01-04 17:21:23,678: search_engine_best successfully returned 1 results for query number 30.
-DEBUG 2021-01-04 17:21:23,694: search_engine_best successfully returned 1 results for query number 31.
-ERROR 2021-01-04 17:21:23,694: The following error occured while testing the module search_engine_best.
-ERROR 2021-01-04 17:21:23,694: Can't get information for term: Bill Gates
+ERROR 2021-01-04 22:37:06,252: report_part_c.docx does not exist.
+INFO 2021-01-04 22:37:06,268: Successfully loaded benchmark labels data.
+INFO 2021-01-04 22:37:06,268: Successfully loaded queries data.
+ERROR 2021-01-04 22:37:06,268: search_engine_1.py does not exist.
+ERROR 2021-01-04 22:37:06,268: search_engine_2.py does not exist.
+INFO 2021-01-04 22:37:06,627: Successfully imported module search_engine_best.
+DEBUG 2021-01-04 22:37:11,735: Building the index in search_engine_best for benchmark data took 5.104813 seconds.
+DEBUG 2021-01-04 22:37:11,751: search_engine_best successfully returned 1 results for the query 'bioweapon'.
+DEBUG 2021-01-04 22:37:11,782: search_engine_best successfully returned 1 results for query number 1.
+DEBUG 2021-01-04 22:37:11,798: search_engine_best successfully returned 1 results for query number 2.
+DEBUG 2021-01-04 22:37:11,813: search_engine_best successfully returned 1 results for query number 3.
+DEBUG 2021-01-04 22:37:11,829: search_engine_best successfully returned 1 results for query number 4.
+DEBUG 2021-01-04 22:37:11,829: search_engine_best successfully returned 1 results for query number 5.
+DEBUG 2021-01-04 22:37:11,845: search_engine_best successfully returned 1 results for query number 6.
+DEBUG 2021-01-04 22:37:11,860: search_engine_best successfully returned 1 results for query number 7.
+DEBUG 2021-01-04 22:37:11,860: search_engine_best successfully returned 1 results for query number 8.
+DEBUG 2021-01-04 22:37:11,876: search_engine_best successfully returned 1 results for query number 9.
+DEBUG 2021-01-04 22:37:11,907: search_engine_best successfully returned 1 results for query number 10.
+DEBUG 2021-01-04 22:37:11,923: search_engine_best successfully returned 1 results for query number 11.
+DEBUG 2021-01-04 22:37:11,938: search_engine_best successfully returned 1 results for query number 12.
+DEBUG 2021-01-04 22:37:11,938: search_engine_best successfully returned 1 results for query number 13.
+DEBUG 2021-01-04 22:37:11,954: search_engine_best successfully returned 1 results for query number 14.
+DEBUG 2021-01-04 22:37:11,970: search_engine_best successfully returned 1 results for query number 15.
+DEBUG 2021-01-04 22:37:11,985: search_engine_best successfully returned 1 results for query number 16.
+DEBUG 2021-01-04 22:37:12,001: search_engine_best successfully returned 1 results for query number 17.
+DEBUG 2021-01-04 22:37:12,001: search_engine_best successfully returned 1 results for query number 18.
+DEBUG 2021-01-04 22:37:12,032: search_engine_best successfully returned 1 results for query number 19.
+DEBUG 2021-01-04 22:37:12,048: search_engine_best successfully returned 1 results for query number 20.
+DEBUG 2021-01-04 22:37:12,063: search_engine_best successfully returned 1 results for query number 21.
+DEBUG 2021-01-04 22:37:12,079: search_engine_best successfully returned 1 results for query number 22.
+DEBUG 2021-01-04 22:37:12,095: search_engine_best successfully returned 1 results for query number 23.
+DEBUG 2021-01-04 22:37:12,110: search_engine_best successfully returned 1 results for query number 24.
+DEBUG 2021-01-04 22:37:12,110: search_engine_best successfully returned 1 results for query number 25.
+DEBUG 2021-01-04 22:37:12,126: search_engine_best successfully returned 1 results for query number 26.
+DEBUG 2021-01-04 22:37:12,126: search_engine_best successfully returned 1 results for query number 27.
+DEBUG 2021-01-04 22:37:12,157: search_engine_best successfully returned 1 results for query number 28.
+DEBUG 2021-01-04 22:37:12,173: search_engine_best successfully returned 1 results for query number 29.
+DEBUG 2021-01-04 22:37:12,188: search_engine_best successfully returned 1 results for query number 30.
+DEBUG 2021-01-04 22:37:12,204: search_engine_best successfully returned 1 results for query number 31.
+ERROR 2021-01-04 22:37:12,204: The following error occured while testing the module search_engine_best.
+ERROR 2021-01-04 22:37:12,204: Can't get information for term: Bill Gates
 Traceback (most recent call last):
   File "D:\Python\IR_Project\Part_C\searcher.py", line 101, in get_information_for_q_term
     q_term_tweet_dict = char_postings_file_for_q_term[q_term_lower] #todo tolower added for testing
@@ -49,7 +49,7 @@ During handling of the above exception, another exception occurred:
 Traceback (most recent call last):
   File "D:/Python/IR_Project/Part_C/test_part_c_students.py", line 122, in <module>
     q_n_res, q_res = engine.search(q_keywords)
-  File "D:\Python\IR_Project\Part_C\search_engine_best.py", line 82, in search
+  File "D:\Python\IR_Project\Part_C\search_engine_best.py", line 81, in search
     return searcher.search(query)
   File "D:\Python\IR_Project\Part_C\searcher.py", line 50, in search
     query_as_list, term_doc_dict, q_max_tf)
@@ -58,4 +58,4 @@ Traceback (most recent call last):
   File "D:\Python\IR_Project\Part_C\searcher.py", line 105, in get_information_for_q_term
     raise IOError("Can't get information for term: " + q_term)
 OSError: Can't get information for term: Bill Gates
-DEBUG 2021-01-04 17:21:23,694: Total runtime was: 0:00:05.214254
+DEBUG 2021-01-04 22:37:12,204: Total runtime was: 0:00:05.951886

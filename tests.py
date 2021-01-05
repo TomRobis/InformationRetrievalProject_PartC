@@ -13,5 +13,5 @@ print(concat_sen)
 # parsed_sen = p.parse_sentence(sen)
 # print(parsed_sen)
 
-print('@'.isalpha())
+print('@'.islower())
 
