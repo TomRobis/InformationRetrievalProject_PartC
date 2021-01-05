@@ -215,13 +215,11 @@ class Indexer:
         :return: unified_terms and character_to_deleted_terms
         """
         for term in self.terms_index.keys():
-            if term[0].isalpha() and term.capitalize() in self.terms_index.keys() and term.lower() in self.terms_index.keys():
-                upper_case_term = term.capitalize()
-                lower_case_term = term.lower()
-                print(self.terms_index[lower_case_term],self.terms_index[upper_case_term])
+            lower_case_term = term[0].lower() + term[1:]
+            upper_case_term = term.capitalize()
+            if term[0].isalpha() and upper_case_term in self.terms_index.keys() and lower_case_term in self.terms_index.keys():
                 self.terms_index[lower_case_term][0] += self.terms_index[upper_case_term][0]
                 self.terms_index[lower_case_term][1] += self.terms_index[upper_case_term][1]
-                print(self.terms_index[lower_case_term], self.terms_index[upper_case_term])
                 unified_terms[lower_case_term[0]].add(lower_case_term)
 
             elif self.terms_index[term][1] == 1:  # appears at least twice if it enters first if statement
@@ -253,7 +251,7 @@ class Indexer:
 
     def unify_terms(self, postings_file_for_char, unified_terms_for_char):
         for unified_term in unified_terms_for_char:
-            lower_case_term = unified_term.lower()
+            lower_case_term = unified_term[0].lower() + unified_term[1:]
             upper_case_term = unified_term.capitalize()
             for doc_id in postings_file_for_char[upper_case_term].keys():
                 if doc_id not in postings_file_for_char[lower_case_term].keys():
@@ -263,6 +261,15 @@ class Indexer:
             del postings_file_for_char[upper_case_term]
 
     def remove_terms_with_one_appearance_in_corpus(self, postings_file_for_char,deleted_terms_for_char):
-        for deleted_term in deleted_terms_for_char:
-            del self.terms_index[deleted_term]
-            del postings_file_for_char[deleted_term]
+        try:
+            for term_to_remove in deleted_terms_for_char:
+                lower_case_term = term_to_remove[0].lower() + term_to_remove[1:]
+                upper_case_term = term_to_remove.capitalize()
+                if lower_case_term in self.terms_index.keys():
+                    del self.terms_index[lower_case_term]
+                    del postings_file_for_char[lower_case_term]
+                else:
+                    del self.terms_index[upper_case_term]
+                    del postings_file_for_char[upper_case_term]
+        except:
+            print(term_to_remove)
