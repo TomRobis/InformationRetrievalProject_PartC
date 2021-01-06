@@ -134,8 +134,8 @@ class Indexer:
                         df = self.terms_index[term][0]
                     tf_idf = self.calculate_tf_idf(term_doc_dict[term], tweet_posting[1],df, self.doc_id)
                     updated_term_doc_dict[lower_case_term] = tf_idf
-                    sigma_wij += tf_idf
-                tweet_posting[1] = abs(sigma_wij)
+                    sigma_wij += math.pow(tf_idf,2)
+                tweet_posting[1] = sigma_wij
                 tweet_posting[2] = updated_term_doc_dict
             utils.save_obj(tweets_postings_file, str(i+1), self.config.get_tweets_postings_path())
 
@@ -157,6 +157,9 @@ class Indexer:
 
     def get_terms_index(self):
         return self.terms_index
+
+    def get_tweets_postings_counter(self):
+        return self.tweets_postings_counter
 
     def post_process(self):
         self.dump_tweet_postings_to_disc()

@@ -91,15 +91,15 @@ class SearchEngine:
         # df = pd.read_parquet(fn, engine="pyarrow")
         # documents_list = df.values.tolist()
         # # Iterate over every document in the file
-        document_1 = ['1280921542243659111', 'Wed Jul 08 17:47:48 +0000 2020', "Banana morty Ball ping Call bing Call",
+        document_1 = ['1280921542243659106', 'Wed Jul 08 17:47:48 +0000 2020', "Banana hello banana",
                       '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
                       '[[117,140]]', None, None, None, None, None, None, None, None, None]
         document_2 = ['1280921542243659110', 'Wed Jul 08 17:47:48 +0000 2020',
-                      "banana Banana morty rick Baby BanaNa fall Ping Ball",
+                      "banana morty rick Baby BanaNa fall Ping Ball",
                       '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
                       '[[117,140]]', None, None, None, None, None, None, None, None, None]
-        document_3 = ['1280921542243659110', 'Wed Jul 08 17:47:48 +0000 2020',
-                      "naor suban king world wide mister tom",
+        document_3 = ['1280921542243659109', 'Wed Jul 08 17:47:48 +0000 2020',
+                      "naor banana tom",
                       '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
                       '[[117,140]]', None, None, None, None, None, None, None, None, None]
         documents_list = [document_1, document_2,document_3]
@@ -127,8 +127,8 @@ def main():
     utils.create_parent_dir(config.get_tweets_postings_path())
 
     se = SearchEngine(config)
-    se.build_index_from_parquet(config.get_corpusPath())
-    n_res,res = se.search('Gates')
+    se.test_build_index_from_parquet(config.get_corpusPath())
+    n_res,res = se.search('fall')
     print("Tweet id: {}".format(res))
 
 
