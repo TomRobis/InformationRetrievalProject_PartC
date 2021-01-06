@@ -91,18 +91,22 @@ class SearchEngine:
         # df = pd.read_parquet(fn, engine="pyarrow")
         # documents_list = df.values.tolist()
         # # Iterate over every document in the file
-        document_1 = ['1280921542243659106', 'Wed Jul 08 17:47:48 +0000 2020', "Banana hello banana",
+        document_1 = ['12809215422436591023', 'Wed Jul 08 17:47:48 +0000 2020', "naor asd banana tom",
                       '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
                       '[[117,140]]', None, None, None, None, None, None, None, None, None]
         document_2 = ['1280921542243659110', 'Wed Jul 08 17:47:48 +0000 2020',
-                      "banana morty rick Baby BanaNa fall Ping Ball",
+                      "banana morty rick Baby asd BanaNa fall Ping Ball",
                       '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
                       '[[117,140]]', None, None, None, None, None, None, None, None, None]
-        document_3 = ['1280921542243659109', 'Wed Jul 08 17:47:48 +0000 2020',
-                      "naor banana tom",
+        document_3 = ['1280921542243659101', 'Wed Jul 08 17:47:48 +0000 2020',
+                      "Banana asd rick banana banana banana banana banana banana",
                       '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
                       '[[117,140]]', None, None, None, None, None, None, None, None, None]
-        documents_list = [document_1, document_2,document_3]
+        document_4 = ['128092154224365910222', 'Wed Jul 08 17:47:48 +0000 2020',
+                      "lalala hello lalala",
+                      '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
+                      '[[117,140]]', None, None, None, None, None, None, None, None, None]
+        documents_list = [document_1, document_2,document_3, document_4]
         number_of_documents = 0
         for idx, document in enumerate(documents_list):
             # parse the document
@@ -128,7 +132,7 @@ def main():
 
     se = SearchEngine(config)
     se.test_build_index_from_parquet(config.get_corpusPath())
-    n_res,res = se.search('fall')
+    n_res,res = se.search('banana')
     print("Tweet id: {}".format(res))
 
 

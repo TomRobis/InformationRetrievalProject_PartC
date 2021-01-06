@@ -16,7 +16,7 @@ class Ranker:
             for term_in_tweet in term_to_Wij_dict.keys():
                 if term_in_tweet not in self.Wiq_dict.keys():
                     continue
-                inner_product_for_tweet += term_to_Wij_dict[term_in_tweet] * self.Wiq_dict[term_in_tweet]
+                inner_product_for_tweet += (term_to_Wij_dict[term_in_tweet] * self.Wiq_dict[term_in_tweet])
             cos_sim_denominator = (math.sqrt(self.sigma_Wiq_squared * tweet_posting[1]))
             cos_sim = (inner_product_for_tweet / cos_sim_denominator) if cos_sim_denominator != 0 else 0
             tweet_id_to_cos_sim[tweet_posting[0]] = cos_sim  # tweet_id to cos-sim
