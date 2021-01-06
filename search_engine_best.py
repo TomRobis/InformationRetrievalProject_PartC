@@ -1,6 +1,5 @@
 import pandas as pd
 
-import post_processer
 import utils
 from parser_classes.parser_module import Parse
 from indexer import Indexer
@@ -40,11 +39,10 @@ class SearchEngine:
             number_of_documents += 1
             # index the document data
             self._indexer.add_new_doc(parsed_document)
-        print('Finished parsing and indexing.')
-        pc = post_processer.post_processor()
-        pc.post_process()
+        print('Finished parsing and indexing. commencing post processing...')
+        self._indexer.post_process()
+        print('Finished post processing.')
         # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
-        print('a')
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -82,6 +80,43 @@ class SearchEngine:
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query)
 
+    def test_build_index_from_parquet(self, fn): #todo delete when submitting
+        """
+        Reads parquet file and passes it to the parser, then indexer.
+        Input:
+            fn - path to parquet file
+        Output:
+            No output, just modifies the internal _indexer object.
+        """
+        # df = pd.read_parquet(fn, engine="pyarrow")
+        # documents_list = df.values.tolist()
+        # # Iterate over every document in the file
+        document_1 = ['1280921542243659111', 'Wed Jul 08 17:47:48 +0000 2020', "Banana morty Ball ping Call bing Call",
+                      '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
+                      '[[117,140]]', None, None, None, None, None, None, None, None, None]
+        document_2 = ['1280921542243659110', 'Wed Jul 08 17:47:48 +0000 2020',
+                      "banana Banana morty rick Baby BanaNa fall Ping Ball",
+                      '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
+                      '[[117,140]]', None, None, None, None, None, None, None, None, None]
+        document_3 = ['1280921542243659110', 'Wed Jul 08 17:47:48 +0000 2020',
+                      "naor suban king world wide mister tom",
+                      '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
+                      '[[117,140]]', None, None, None, None, None, None, None, None, None]
+        documents_list = [document_1, document_2,document_3]
+        number_of_documents = 0
+        for idx, document in enumerate(documents_list):
+            # parse the document
+            parsed_document = self._parser.parse_doc(document)
+            number_of_documents += 1
+            # index the document data
+            self._indexer.add_new_doc(parsed_document)
+
+            if number_of_documents == 1:
+                self._indexer.dump_tweet_postings_to_disc()
+        print('Finished parsing and indexing. commencing post processing...')
+        self._indexer.post_process()
+        print('Finished post processing.')
+        # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
 
 def main():
     config = ConfigClass()
@@ -93,16 +128,7 @@ def main():
 
     se = SearchEngine(config)
     se.build_index_from_parquet(config.get_corpusPath())
-    # se.load_index?
-    # if num_docs_to_retrieve > 2000:
-    #     num_docs_to_retrieve = 2000
-
-    #  now answering queries given.
-    answers_tuples = []
-    # for i in range(len(queries)):
     n_res,res = se.search('Gates')
     print("Tweet id: {}".format(res))
-    #         # doc_posting.append(i+1)
-    #         # answers_tuples.append(doc_posting)
 
-    # IO_handler.write_answers_to_csv(answers_tuples,'results.csv')
+

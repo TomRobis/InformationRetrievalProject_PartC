@@ -34,5 +34,5 @@ from parser_classes import parser_module
 
 a = {'a':1 ,'b':2}
 
-a['B'] = a.pop('b')
-print(a)
+for i in range(1):
+    print(i)

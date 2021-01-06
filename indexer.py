@@ -1,7 +1,9 @@
 # DO NOT MODIFY CLASS NAME
-from string import ascii_lowercase, digits, ascii_uppercase
+import math
 
 import utils
+
+
 
 
 class Indexer:
@@ -11,18 +13,9 @@ class Indexer:
         self.config = config
         self.terms_index = dict()  # maps terms to their postings in disc
 
-        # responsible for holding postings in disc and memory
-        self.character_to_postings_file = dict()  # maps character to character postings file in memory
-
-        # ~ stands for any character different than the rest
-        self.special_characters = ascii_lowercase + digits + '#' + '@'
-        for character in self.special_characters:
-            self.character_to_postings_file[character] = [dict(), 0]
-            utils.save_obj(dict(), character, config.get_terms_postings_path())
-
         self.tweets_postings_file = dict()  # maps tweets to their relevant information
 
-        self.tweets_postings_counter = 1
+        self.tweets_postings_counter = 0
         self.doc_id = 0  # counter for the number of tweets in the corpus
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -35,7 +28,6 @@ class Indexer:
         max_tf = self.index_all_terms(document)
 
         self.update_tweets_information(document, max_tf)
-
 
     def index_all_terms(self, document):
         """
@@ -59,63 +51,38 @@ class Indexer:
             additionally, if necessary, write said postings file to disc and empty its' memory.
         """
         # update the inverted index
-        if term not in self.terms_index:  # term never indexed before
-            self.terms_index[term] = [0, 0]
+        lower_case_term = term[0].lower() + term[1:]
+        upper_case_term = term[0].upper() + term[1:]
+        if lower_case_term not in self.terms_index.keys() and upper_case_term not in self.terms_index.keys():  # term never indexed before
+            self.terms_index[term] = [0, 0, set()]
+            self.insert_term_to_terms_index(term,term_freq_in_tweet)
+        elif lower_case_term in self.terms_index.keys():
+            self.insert_term_to_terms_index(lower_case_term, term_freq_in_tweet)
+        elif term[0].islower() and term not in self.terms_index.keys():
+            self.terms_index[term] = self.terms_index.pop(upper_case_term)
+            self.insert_term_to_terms_index(term,term_freq_in_tweet)
+        else:
+            self.insert_term_to_terms_index(term, term_freq_in_tweet)
+
+    def insert_term_to_terms_index(self, term, term_freq_in_tweet):
         self.terms_index[term][0] += 1  # df
         self.terms_index[term][1] += term_freq_in_tweet  # term_freq_in_corpus
+        self.terms_index[term][2].add(self.doc_id)  # set of docs
 
-        #  grab the postings file for the term
-        term_starts_with = term[0].lower()
-        # problems here indicate ~ needs values
-        character_postings_file = self.character_to_postings_file[term_starts_with][0]
-
-        #  update the postings file you found
-        if term not in character_postings_file.keys():
-            character_postings_file[term] = set()
-        if self.doc_id not in character_postings_file[term]:  # check if there's an old entry
-            character_postings_file[term].add(self.doc_id)
-        # character_postings_file[term][self.doc_id] = term_freq_in_tweet
-        #  update the character's counter of terms
-        self.character_to_postings_file[term_starts_with][1] += 1  # per posting, not per term.
-        #  write postings to disc if necessary
-        if self.postings_too_large(self.character_to_postings_file[term_starts_with][1],self.config.get_terms_postings_file_size()):
-            self.merge_postings(term_starts_with)
-
-    # merges postings file in disc with posting file in memory, and write the merged postings file to disc.
-    # empties the one in memory after writing to disc.
-    def merge_postings(self, character):
-        #  grab postings file from disc.
-
-        former_postings_file_in_disc = utils.load_obj(character, self.config.get_terms_postings_path())
-        current_postings_file_in_memory = self.character_to_postings_file[character][0]
-
-        #  for each term in posting file previously stored in disc:
-        for term in former_postings_file_in_disc.keys():
-            former_term_tweets_set = former_postings_file_in_disc[term]
-            if term not in current_postings_file_in_memory.keys():  # new term - stored in disc but not in memory.
-                current_postings_file_in_memory[term] = set()
-            current_postings_file_in_memory[term].update(former_term_tweets_set)
-
-        utils.save_obj(current_postings_file_in_memory, character, self.config.get_terms_postings_path())
-        current_postings_file_in_memory.clear()  # remove old entries already written to disc from memory
 
     # after indexing the terms, updates the tweet's information in the indexer.
     # if the postings file for the tweets is too large, it is moved to the disc and emptied in memory.
     def update_tweets_information(self, document, max_tf):
-        self.tweets_postings_file[self.doc_id] = [document.tweet_id, max_tf,document.term_doc_dictionary]
+        self.tweets_postings_file[self.doc_id] = [document.tweet_id, max_tf, document.term_doc_dictionary]
 
         # move tweets postings to disc if needed
         if self.postings_too_large(self.doc_id, self.config.get_tweets_postings_file_size()):
-            #  write the postings to disc and empty the dictionary in memory.
-            utils.save_obj(self.tweets_postings_file, str(self.tweets_postings_counter),
-                        self.config.get_tweets_postings_path())
-            self.tweets_postings_counter += 1
-            self.tweets_postings_file.clear()  # delete postings file after writing it to disc.
+            self.dump_tweet_postings_to_disc()
+
 
     #  calculates whether postings file is too large
     def postings_too_large(self, current_postings_size, optimal_file_size):
         return current_postings_size % optimal_file_size == optimal_file_size - 1
-
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -140,24 +107,64 @@ class Indexer:
         """
         utils.save_obj(obj=(self.terms_index, self.tweets_index), name='indexes', path=fn)
 
+    def update_tweets_postings(self):
+        """
+
+        :return:
+        """
+        for i in range(self.tweets_postings_counter):
+            tweets_postings_file = utils.load_obj(str(i+1), self.config.get_tweets_postings_path())
+            for tweet in tweets_postings_file.keys():
+                sigma_wij = 0
+                updated_term_doc_dict = dict()
+                tweet_posting = tweets_postings_file[tweet]
+                term_doc_dict = tweet_posting[2]
+                for term in term_doc_dict.keys():
+                    lower_case_term = term[0].lower() + term[1:]
+                    # dont write to new dict = delete,  when term_freq_in_corpus == 1.
+                    # deletion from terms_index (del)  and postings (not saved in updated, "continue")
+                    if term in self.terms_index.keys() and self.terms_index[term][1] == 1:
+                        del self.terms_index[term]
+                        continue
+                    # calculates tf-idf with term_freq_in_tweet, max_tf, df and N. the upper-case term
+                    # is removed and replaced later with an entry of its' lower_case form as key and a tf-idf value
+                    elif term[0].isupper() and lower_case_term in self.terms_index.keys():
+                        df = self.terms_index[lower_case_term][0]
+                    else:
+                        df = self.terms_index[term][0]
+                    tf_idf = self.calculate_tf_idf(term_doc_dict[term], tweet_posting[1],df, self.doc_id)
+                    updated_term_doc_dict[lower_case_term] = tf_idf
+                    sigma_wij += tf_idf
+                tweet_posting[1] = abs(sigma_wij)
+                tweet_posting[2] = updated_term_doc_dict
+            utils.save_obj(tweets_postings_file, str(i+1), self.config.get_tweets_postings_path())
+
+    def calculate_tf_idf(self, term_freq_in_tweet, max_tf, df, N):
+        """
+
+        :param term_freq_in_tweet:
+        :param max_tf:
+        :param df:
+        :param N:
+        :return:
+        """
+        tf = term_freq_in_tweet / max_tf
+        idf = math.log((N / df), self.config.get_log_basis_for_idf())
+        return tf * idf
+
     def get_config(self):
         return self.config
-
-    def get_special_characters(self):
-        return self.special_characters
-
-    def get_character_to_postings_files(self):
-        return self.character_to_postings_file
-
-    def get_tweets_postings_file(self):
-        return self.tweets_postings_file
-
-    def get_tweets_postings_counter(self):
-        return self.tweets_postings_counter
-
-    def get_doc_id(self):
-        return self.doc_id
 
     def get_terms_index(self):
         return self.terms_index
 
+    def post_process(self):
+        self.dump_tweet_postings_to_disc()
+        self.update_tweets_postings()
+
+    def dump_tweet_postings_to_disc(self):
+        #  write the postings to disc and empty the dictionary in memory.
+        self.tweets_postings_counter += 1
+        utils.save_obj(self.tweets_postings_file, str(self.tweets_postings_counter),
+                       self.config.get_tweets_postings_path())
+        self.tweets_postings_file.clear()

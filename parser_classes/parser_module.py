@@ -30,12 +30,12 @@ class Parse:
              })
         self.useless_token_list = ['t.co', 'https', 'RT']
 
-
     '''
     based on Factory Design Pattern, but because tokenizers have different behavior, can't make a single indetical call
     for every tokenizer; therefore, making an actual factory is obsolete.
     this way, we let the information expert,parser, decide which tokenize to invoke and whether to advance the index.    
     '''
+
     def parse_sentence(self, text):
         parsed_tokens = []
         text_tokens = word_tokenize(text)
@@ -90,7 +90,7 @@ class Parse:
             tokenized_text = self.stem.porter_stemmer(tokenized_text)
         term_dict = self.create_term_doc_dict(tokenized_text)
 
-        document = Document(tweet_id, tokenized_text, term_dict) #todo updated in part c
+        document = Document(tweet_id, tokenized_text, term_dict)  # todo updated in part c
 
         return document
 
@@ -102,10 +102,15 @@ class Parse:
         term_dict = dict()
         for term in tokenized_text:
             lower_case_term = term[0].lower() + term[1:]
-            if lower_case_term in term_dict.keys():
-                term_dict[lower_case_term] += 1
-            else:
+            upper_case_term = term[0].upper() + term[1:]
+            if lower_case_term not in term_dict.keys() and upper_case_term not in term_dict.keys():
                 term_dict[term] = 1
+            elif term == lower_case_term and upper_case_term in term_dict.keys():
+                term_dict[lower_case_term] = term_dict.pop(upper_case_term) + 1
+            elif lower_case_term in term_dict.keys():
+                term_dict[lower_case_term] += 1
+            else:  # upper case
+                term_dict[term] += 1
         return term_dict
 
     def is_symbol(self, token, next_token):
@@ -129,7 +134,7 @@ class Parse:
         return re.match("^[A-Za-z0-9]*$", token) and re.match("^[A-Za-z0-9]*$", token[0])
 
     def is_invalid_token(self, token):
-        return token in self.stop_words or len(token) <= 1 or token.startswith(('/','.', '-'))
+        return token.lower() in self.stop_words or len(token) <= 1 or token.startswith(('/', '.', '-'))
 
     def is_entity(self, token, next_token):
         return token[0].isupper() and next_token[0].isupper()
