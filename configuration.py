@@ -26,6 +26,8 @@ class ConfigClass:
         #  threshold for file sizes, relates to number of terms kept in each posting
         self.OPTIMAL_TERMS_FILE_SIZE = 100000
         self.OPTIMAL_TWEETS_FILE_SIZE = 100000
+        self.post_process_cache_size = 1
+        self.log_basis_for_idf = 2
 
         print('Project was created successfully..')
 
@@ -55,3 +57,6 @@ class ConfigClass:
 
     def get_output_path(self):
         return self.savedFileMainFolder
+
+    def get_log_basis_for_idf(self):
+        return self.log_basis_for_idf

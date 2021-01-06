@@ -1,6 +1,6 @@
 class Document:
 
-    def __init__(self, tweet_id=None, tweet_date=None,tokenized_text=None,term_doc_dictionary=None):
+    def __init__(self, tweet_id=None,tokenized_text=None,term_doc_dictionary=None): #todo added in part c
         """
         :param tweet_id: tweet id
         :param tweet_date: tweet date
@@ -10,7 +10,6 @@ class Document:
         :param doc_length: doc length
         """
         self.tweet_id = tweet_id
-        self.tweet_date = tweet_date
         self.tokenized_text = tokenized_text
         self.term_doc_dictionary = term_doc_dictionary
 

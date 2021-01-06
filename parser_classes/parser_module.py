@@ -66,7 +66,7 @@ class Parse:
         :return: Document object with corresponding fields.
         """
         tweet_id = doc_as_list[0]
-        tweet_date = doc_as_list[1]
+        # tweet_date = doc_as_list[1] #todo updated in part c
         full_text = doc_as_list[2]
         urls = doc_as_list[3]
         quoted_text = doc_as_list[8]
@@ -90,7 +90,7 @@ class Parse:
             tokenized_text = self.stem.porter_stemmer(tokenized_text)
         term_dict = self.create_term_doc_dict(tokenized_text)
 
-        document = Document(tweet_id,tweet_date, tokenized_text, term_dict)
+        document = Document(tweet_id, tokenized_text, term_dict) #todo updated in part c
 
         return document
 
@@ -101,9 +101,11 @@ class Parse:
     def create_term_doc_dict(self, tokenized_text):
         term_dict = dict()
         for term in tokenized_text:
-            if term not in term_dict.keys():
-                term_dict[term] = 0
-            term_dict[term] += 1
+            lower_case_term = term[0].lower() + term[1:]
+            if lower_case_term in term_dict.keys():
+                term_dict[lower_case_term] += 1
+            else:
+                term_dict[term] = 1
         return term_dict
 
     def is_symbol(self, token, next_token):

@@ -1,5 +1,6 @@
 import pandas as pd
 
+import post_processer
 import utils
 from parser_classes.parser_module import Parse
 from indexer import Indexer
@@ -40,7 +41,8 @@ class SearchEngine:
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         print('Finished parsing and indexing.')
-        self._indexer.post_process()
+        pc = post_processer.post_processor()
+        pc.post_process()
         # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
         print('a')
 
