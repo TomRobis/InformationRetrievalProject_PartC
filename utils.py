@@ -3,7 +3,7 @@ import pickle
 from os import mkdir
 from os.path import isdir
 
-import requests
+# import requests
 import zipfile
 import re
 
@@ -40,21 +40,21 @@ def load_obj(name, path = ""): #todo pkl removed part c
 
 __fid_ptrn = re.compile("(?<=/folders/)([\w-]+)|(?<=%2Ffolders%2F)([\w-]+)|(?<=/file/d/)([\w-]+)|(?<=%2Ffile%2Fd%2F)([\w-]+)|(?<=id=)([\w-]+)|(?<=id%3D)([\w-]+)")
 __gdrive_url = "https://docs.google.com/uc?export=download"
-def download_file_from_google_drive(url, destination):
-    m = __fid_ptrn.search(url)
-    if m is None:
-        raise ValueError(f'Could not identify google drive file id in {url}.')
-    file_id = m.group()
-    session = requests.Session()
-
-    response = session.get(__gdrive_url, params = { 'id' : file_id }, stream = True)
-    token = _get_confirm_token(response)
-
-    if token:
-        params = { 'id' : file_id, 'confirm' : token }
-        response = session.get(__gdrive_url, params = params, stream = True)
-
-    _save_response_content(response, destination)    
+# def download_file_from_google_drive(url, destination):
+#     m = __fid_ptrn.search(url)
+#     if m is None:
+#         raise ValueError(f'Could not identify google drive file id in {url}.')
+#     file_id = m.group()
+#     # session = requests.Session()
+#
+#     response = session.get(__gdrive_url, params = { 'id' : file_id }, stream = True)
+#     token = _get_confirm_token(response)
+#
+#     if token:
+#         params = { 'id' : file_id, 'confirm' : token }
+#         response = session.get(__gdrive_url, params = params, stream = True)
+#
+#     _save_response_content(response, destination)
 
 def _get_confirm_token(response):
     for key, value in response.cookies.items():

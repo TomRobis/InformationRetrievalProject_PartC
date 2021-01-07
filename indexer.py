@@ -22,15 +22,16 @@ class Indexer:
     # You can change the internal implementation as you see fit.
     def add_new_doc(self, document):
         """
-
-        :param document:
-        :return:
+        indexes a new tweet after it has been parsed.
+        :param document: Documents object:  a tweet that has been parsed. contains information of the tweet and
+        terms in it.
         """
         self.doc_id += 1
 
         # index every term in document and return the term who appeared most frequently.
         max_tf = self.index_all_terms(document)
 
+        # update the tweets postings with the fresh tweet
         self.update_tweets_information(document, max_tf)
 
     def index_all_terms(self, document):
@@ -50,9 +51,11 @@ class Indexer:
 
     def index_term(self, term, term_freq_in_tweet):
         """
-            firstly, update the inverted index.
-            secondly, update the correct postings file.
-            additionally, if necessary, write said postings file to disc and empty its' memory.
+        firstly, update the inverted index.
+        secondly, update the correct postings file.
+        additionally, if necessary, write said postings file to disc and empty its' memory.
+        :param term: some term that has appeared in the tweet
+        :param term_freq_in_tweet: number of appearnces of said term in tweet.
         """
         # update the inverted index
         lower_case_term = term[0].lower() + term[1:]
@@ -69,12 +72,6 @@ class Indexer:
             self.insert_term_to_terms_index(term, term_freq_in_tweet)
 
     def insert_term_to_terms_index(self, term, term_freq_in_tweet):
-        """
-
-        :param term:
-        :param term_freq_in_tweet:
-        :return:
-        """
         self.terms_index[term][0] += 1  # df
         self.terms_index[term][1] += term_freq_in_tweet  # term_freq_in_corpus
         self.terms_index[term][2].add(self.doc_id)  # set of docs
@@ -84,10 +81,10 @@ class Indexer:
     # if the postings file for the tweets is too large, it is moved to the disc and emptied in memory.
     def update_tweets_information(self, document, max_tf):
         """
-
-        :param document:
-        :param max_tf:
-        :return:
+        updates a single tweet with its' relevant information.
+        if needed, places tweets' postings file in disc and makes a new postings file in memory.
+        :param document: Document object containing some information of the tweet.
+        :param max_tf: int: indicating the highest number of appearances of any term that has appeared in the doc.
         """
         self.tweets_postings_file[self.doc_id] = [document.tweet_id, max_tf, document.term_doc_dictionary]
 
@@ -98,10 +95,9 @@ class Indexer:
 
     def postings_too_large(self, current_postings_size, optimal_file_size):
         """
-
+        determines whether a postings file in memory is too large and needs to be dumped to disc.
         :param current_postings_size:
-        :param optimal_file_size:
-        :return:
+        :param optimal_file_size: maximal size of a postings file in memory.
         """
         return current_postings_size % optimal_file_size == optimal_file_size - 1
 
@@ -126,6 +122,12 @@ class Indexer:
         utils.save_obj(obj=self.terms_index, name=fn, path='')
 
     def post_process(self):
+        """
+        firstly, we dump any remaining posting from memory into disc.
+        secondly, after all the terms have been parsed and indexed, the postings in the disc are not up to date.
+        therefore, we iterate over every postings and update it to match the information in the index.
+        :return:
+        """
         self.dump_tweet_postings_to_disc()
         self.update_tweets_postings()
 
@@ -143,9 +145,9 @@ class Indexer:
 
     def update_single_tweet_postings(self, tweet_posting):
         """
-
-        :param tweet_posting:
-        :return:
+        updates a postings file holding OPTIMAL_FILE_SIZE tweets.
+        once it has been updated, calculcates a sigma_WIJ value of the tweet and tf-idf of every term in it.
+        :param tweet_posting: a posting of a single tweet.
         """
         sigma_wij = 0
         updated_term_doc_dict = dict()
@@ -170,14 +172,6 @@ class Indexer:
         tweet_posting[2] = updated_term_doc_dict
 
     def calculate_tf_idf(self, term_freq_in_tweet, max_tf, df, N):
-        """
-
-        :param term_freq_in_tweet:
-        :param max_tf:
-        :param df:
-        :param N:
-        :return:
-        """
         tf = term_freq_in_tweet / max_tf
         idf = math.log((N / df), self.config.get_log_basis_for_idf())
         return tf * idf
@@ -193,7 +187,10 @@ class Indexer:
 
 
     def dump_tweet_postings_to_disc(self):
-        #  write the postings to disc and empty the dictionary in memory.
+        """
+        writes the postings to disc and empties the dictionary in memory.
+        :return:
+        """
         self.tweets_postings_counter += 1
         utils.save_obj(self.tweets_postings_file, str(self.tweets_postings_counter),
                        self.config.get_tweets_postings_path())

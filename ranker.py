@@ -8,6 +8,11 @@ class Ranker:
         self.relevant_tweets_with_info = relevant_tweets_with_information
 
     def rank_relevant_docs(self):
+        """
+        calculates cos-sim for every tweet in relevant tweets received from searcher.
+
+        :return: list: of tweet ids sorted by descending cos-sim.
+        """
         tweet_id_to_cos_sim = dict()
         for tweet in self.relevant_tweets_with_info.keys():
             inner_product_for_tweet = 0
@@ -30,9 +35,3 @@ class Ranker:
         :return: list of relevant document
         """
         return k, sorted_relevant_doc[:k]
-
-    def Wiq_mul_wij(self, doc_id, q_term, doc_max_tf):
-        tf_idf = self.tf_idf(self.query_terms[q_term][1][doc_id], doc_max_tf, self.query_terms[q_term][0])
-        Wiq = self.Wiq_vector[q_term]
-        return tf_idf * Wiq
-    # term_freq_in doc, doc_max_tf,df,Wiq

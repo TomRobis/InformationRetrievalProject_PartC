@@ -39,6 +39,7 @@ class SearchEngine:
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         print('Finished parsing and indexing. commencing post processing...')
+        # make sure the postings and indexer are up to date
         self._indexer.post_process()
         print('Finished post processing.')
         # self._indexer.save_index(fn=self._indexer.get_config().get_index_name())
@@ -79,7 +80,7 @@ class SearchEngine:
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query)
 
-    def test_build_index_from_parquet(self, fn): #todo delete when submitting
+    def test_build_index_from_parquet(self, fn):  # todo delete when submitting
         """
         Reads parquet file and passes it to the parser, then indexer.
         Input:
@@ -105,7 +106,7 @@ class SearchEngine:
                       "lalala hello lalala",
                       '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
                       '[[117,140]]', None, None, None, None, None, None, None, None, None]
-        documents_list = [document_1, document_2,document_3, document_4]
+        documents_list = [document_1, document_2, document_3, document_4]
         number_of_documents = 0
         for idx, document in enumerate(documents_list):
             # parse the document
@@ -121,6 +122,7 @@ class SearchEngine:
         print('Finished post processing.')
         # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
 
+
 def main():
     config = ConfigClass()
 
@@ -133,8 +135,6 @@ def main():
     se.build_index_from_parquet(config.get_corpusPath())
 
     # start_time = time.time()
-    n_res,res = se.search('Bill Gates')
+    n_res, res = se.search('Bill Gates')
     # print('query returned in: ' + str(time.time() -start_time) + ' seconds')
     print("Tweet id: {}".format(res[0]))
-
-
