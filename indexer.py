@@ -92,10 +92,7 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
-        indexes = utils.load_obj(name='indexes', path=fn)
-        self.terms_index = indexes[0]
-        self.tweets_index = indexes[1]
-        return self.terms_index, self.tweets_index
+        return utils.load_obj(name=fn)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -105,7 +102,7 @@ class Indexer:
         Input:
               fn - file name of pickled index.
         """
-        utils.save_obj(obj=(self.terms_index, self.tweets_index), name='indexes', path=fn)
+        utils.save_obj(obj=self.terms_index, name=fn, path='')
 
     def update_tweets_postings(self):
         """

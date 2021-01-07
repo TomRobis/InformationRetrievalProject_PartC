@@ -28,6 +28,7 @@ class ConfigClass:
         self.OPTIMAL_TWEETS_FILE_SIZE = 100000
         self.post_process_cache_size = 1
         self.log_basis_for_idf = 2
+        self.index_name = 'idx_bench.pkl'
 
         print('Project was created successfully..')
 
@@ -60,3 +61,6 @@ class ConfigClass:
 
     def get_log_basis_for_idf(self):
         return self.log_basis_for_idf
+
+    def get_index_name(self):
+        return self.index_name

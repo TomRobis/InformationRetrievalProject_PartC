@@ -9,7 +9,7 @@ import re
 
 
 
-def save_obj(obj, name, path = ""):  # todo NAOR
+def save_obj(obj, name, path = ""):  #todo pkl removed part c
     """
     This function save an object as a pickle.
     :param obj: object to save
@@ -17,24 +17,24 @@ def save_obj(obj, name, path = ""):  # todo NAOR
     :return: -
     """
     if path:
-        with open(path +'\\' + name + '.pkl', 'wb') as f:
+        with open(path +'\\' + name, 'wb') as f:
             pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
     else:
-        with open(path + name + '.pkl', 'wb') as f:
+        with open(path + name, 'wb') as f:
             pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 
-def load_obj(name, path = ""):
+def load_obj(name, path = ""): #todo pkl removed part c
     """
     This function will load a pickle file
     :param name: name of the pickle file
     :return: loaded pickle file
     """
     if path:
-        with open(path +'\\'+ name + '.pkl', 'rb') as f:
+        with open(path +'\\'+ name, 'rb') as f:
             return pickle.load(f)
     else:
-        with open(path + name + '.pkl', 'rb') as f:
+        with open(path + name, 'rb') as f:
             return pickle.load(f)
 
 

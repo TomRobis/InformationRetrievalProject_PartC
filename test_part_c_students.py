@@ -141,7 +141,7 @@ if __name__ == '__main__':
                 if bench_lbls is not None and len(queries_results) > 0:
                     q_results_labeled = pd.merge(queries_results, bench_lbls,
                                                  on=['query', 'tweet'], how='inner', suffixes=('_result', '_bench'))
-                    # q_results_labeled.rename(columns={'y_true': 'label'})
+                    q_results_labeled.rename(columns={'y_true': 'label'})
 
                 # test that MAP > 0
                 if q_results_labeled is not None:

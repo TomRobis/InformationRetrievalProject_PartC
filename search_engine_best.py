@@ -1,3 +1,5 @@
+import time
+
 import pandas as pd
 
 import utils
@@ -42,7 +44,7 @@ class SearchEngine:
         print('Finished parsing and indexing. commencing post processing...')
         self._indexer.post_process()
         print('Finished post processing.')
-        # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
+        self._indexer.save_index(fn=self._indexer.get_config().get_index_name())
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -52,7 +54,7 @@ class SearchEngine:
         Input:
             fn - file name of pickled index.
         """
-        self._indexer.load_index(self._indexer.config.get_stemming_dir_path())
+        self._indexer.load_index(fn)
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -131,8 +133,11 @@ def main():
     utils.create_parent_dir(config.get_tweets_postings_path())
 
     se = SearchEngine(config)
-    se.test_build_index_from_parquet(config.get_corpusPath())
-    n_res,res = se.search('banana')
+    se.build_index_from_parquet(config.get_corpusPath())
+
+    # start_time = time.time()
+    n_res,res = se.search('Bill Gates')
+    # print('query returned in: ' + str(time.time() -start_time) + ' seconds')
     print("Tweet id: {}".format(res))
 
 
