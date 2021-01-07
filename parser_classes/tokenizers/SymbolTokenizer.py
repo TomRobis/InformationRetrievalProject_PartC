@@ -1,7 +1,6 @@
-from math import floor
 from re import findall
 
-from parser_classes.iTokenizer import iTokenizer
+from parser_classes.tokenizers.iTokenizer import iTokenizer
 
 
 class SymbolTokenizer(iTokenizer):

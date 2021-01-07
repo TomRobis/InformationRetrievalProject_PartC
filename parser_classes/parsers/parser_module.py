@@ -3,15 +3,15 @@ import re
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
-from parser_classes.EntityTokenizer import EntityTokenizer
-from parser_classes.NumberTokenizer import NumberTokenizer
-from parser_classes.SuffixTokenizer import SuffixTokenizer
-from parser_classes.SymbolTokenizer import SymbolTokenizer
-from parser_classes.URLTokenizer import URLTokenizer
+from parser_classes.tokenizers.EntityTokenizer import EntityTokenizer
+from parser_classes.tokenizers.NumberTokenizer import NumberTokenizer
+from parser_classes.tokenizers.SuffixTokenizer import SuffixTokenizer
+from parser_classes.tokenizers.SymbolTokenizer import SymbolTokenizer
+from parser_classes.tokenizers.URLTokenizer import URLTokenizer
 
 from stemmer import Stemmer
 from document import Document
-from re import search, split
+from re import search
 
 
 class Parse:

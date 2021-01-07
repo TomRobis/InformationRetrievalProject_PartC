@@ -1,6 +1,6 @@
 import re
 
-from parser_classes.iTokenizer import iTokenizer
+from parser_classes.tokenizers.iTokenizer import iTokenizer
 
 
 class URLTokenizer(iTokenizer):

@@ -22,7 +22,7 @@ class Ranker:
             tweet_id_to_cos_sim[tweet_posting[0]] = cos_sim  # tweet_id to cos-sim
         return [k for k, v in sorted(tweet_id_to_cos_sim.items(), key=lambda item: item[1],reverse=True)]
 
-    def retrieve_top_k(self, sorted_relevant_doc, k=500):
+    def retrieve_top_k(self, sorted_relevant_doc, k=250):
         """
         return a list of top K tweets based on their ranking from highest to lowest
         :param sorted_relevant_doc: list of all candidates docs.

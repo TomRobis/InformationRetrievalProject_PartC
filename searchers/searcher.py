@@ -1,5 +1,4 @@
 import math
-from re import search
 from ranker import Ranker
 import utils
 
@@ -16,7 +15,6 @@ class Searcher:
         self._indexer = indexer
         self._ranker = None
         self._model = model
-        # self.spell = SpellChecker()
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -32,9 +30,6 @@ class Searcher:
             a list of tweet_ids where the first element is the most relevant
             and the last is the least relevant result.
         """
-        # spelling = False # set spelling correction todo move to parser
-        # if spelling:
-        #     spell_checked_query = self.speller(query)
         parsed_query = self._parser.parse_sentence(query)
         sigma_Wiq_squared, Wiq_dict = self.get_sigma_wiq_and_relevant_words_in_query(parsed_query)
         relevant_tweets_with_information = self.relevant_docs_from_posting(parsed_query=parsed_query)

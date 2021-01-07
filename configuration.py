@@ -1,5 +1,7 @@
 import os
 
+from query_expandors.wordnet_expandor import wordnet_expandor
+
 
 class ConfigClass:
     def __init__(self):
@@ -29,6 +31,9 @@ class ConfigClass:
         self.post_process_cache_size = 1
         self.log_basis_for_idf = 2
         self.index_name = 'idx_bench.pkl'
+        self.stemming = True
+        self.spelling_correction = True
+        self.query_expandor = wordnet_expandor()  # assuming we support only one expandor
 
         print('Project was created successfully..')
 
@@ -64,3 +69,12 @@ class ConfigClass:
 
     def get_index_name(self):
         return self.index_name
+
+    def get_spelling_correction(self):
+        return self.spelling_correction
+
+    def get_stemming(self):
+        return self.stemming
+
+    def get_query_expandor(self):
+        return self.query_expandor

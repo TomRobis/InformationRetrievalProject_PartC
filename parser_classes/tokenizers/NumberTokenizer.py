@@ -1,6 +1,6 @@
 from math import floor
 
-from parser_classes.iTokenizer import iTokenizer
+from parser_classes.tokenizers.iTokenizer import iTokenizer
 
 
 class NumberTokenizer(iTokenizer):
