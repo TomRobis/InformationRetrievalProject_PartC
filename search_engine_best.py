@@ -44,7 +44,7 @@ class SearchEngine:
         print('Finished parsing and indexing. commencing post processing...')
         self._indexer.post_process()
         print('Finished post processing.')
-        self._indexer.save_index(fn=self._indexer.get_config().get_index_name())
+        # self._indexer.save_index(fn=self._indexer.get_config().get_index_name())
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -76,7 +76,7 @@ class SearchEngine:
             query - string.
         Output:
             A tuple containing the number of relevant search results, and 
-            a list of tweet_ids where the first element is the most relavant 
+            a list of tweet_ids where the first element is the most relevant
             and the last is the least relevant result.
         """
         searcher = Searcher(self._parser, self._indexer, model=self._model)
