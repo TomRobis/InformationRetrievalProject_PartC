@@ -5,7 +5,7 @@ from parser_classes.parsers.parser_module import Parse
 from indexer import Indexer
 from searchers.wordnet_searcher import Searcher
 from configuration import ConfigClass
-
+from observer_impl.concurrency_handler_subject import concurrency_handler_subject
 
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
@@ -16,6 +16,8 @@ class SearchEngine:
         self._config = config
         self._parser = Parse(config.get_stemming())
         self._indexer = Indexer(config)
+        self._concurrency_handler_object = concurrency_handler_subject()
+        self._concurrency_handler_object.attach(self._indexer)
         self._model = None
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -37,7 +39,8 @@ class SearchEngine:
             parsed_document = self._parser.parse_doc(document)
             number_of_documents += 1
             # index the document data
-            self._indexer.add_new_doc(parsed_document)
+            # self._indexer.add_new_doc(parsed_document)
+            self._concurrency_handler_object.add_object_to_queue(parsed_document)
         print('Finished parsing and indexing. commencing post processing...')
         self._indexer.post_process()
         print('Finished post processing.')

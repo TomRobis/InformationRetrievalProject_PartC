@@ -33,8 +33,8 @@ class ConfigClass:
         self.index_name = 'idx_bench.pkl'
         self.stemming = True
         self.spelling_correction = True
-        self.query_expandor = wordnet_expandor()  # assuming we support only one expandor
-
+        # self.query_expandor = wordnet_expandor()  # assuming we support only one expandor
+        self.query_expandor = None
         print('Project was created successfully..')
 
     def get_corpusPath(self):

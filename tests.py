@@ -4,20 +4,6 @@
 #                 ]
 import math
 
-from nltk.corpus import wordnet
-synonyms = []
-antonyms = []
 
-syn = wordnet.synsets("covid")
-print(syn[0].lemma_names()[0])
-    # for l in syn.lemmas():
-    #     synonyms.append(l.name())
-    #     if l.antonyms():
-    #         antonyms.append(l.antonyms()[0].name())
-
-
-
-print(set(synonyms))
-print(set(antonyms))
 
 

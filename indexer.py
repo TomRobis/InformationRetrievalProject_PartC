@@ -1,12 +1,14 @@
 # DO NOT MODIFY CLASS NAME
 import math
+import threading
 
 import utils
+from observer_impl.observer_interface import observer_interface
+from observer_impl.subject_interface import subject_interface
 
 
+class Indexer(observer_interface):
 
-
-class Indexer:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def __init__(self, config):
@@ -17,6 +19,7 @@ class Indexer:
 
         self.tweets_postings_counter = 0
         self.doc_id = 0  # counter for the number of tweets in the corpus
+        self.current_running_indexer_thread = None  # single thread of indexer instance operating
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -59,12 +62,12 @@ class Indexer:
         upper_case_term = term[0].upper() + term[1:]
         if lower_case_term not in self.terms_index.keys() and upper_case_term not in self.terms_index.keys():  # term never indexed before
             self.terms_index[term] = [0, 0, set()]
-            self.insert_term_to_terms_index(term,term_freq_in_tweet)
+            self.insert_term_to_terms_index(term, term_freq_in_tweet)
         elif lower_case_term in self.terms_index.keys():
             self.insert_term_to_terms_index(lower_case_term, term_freq_in_tweet)
         elif term[0].islower() and term not in self.terms_index.keys():
             self.terms_index[term] = self.terms_index.pop(upper_case_term)
-            self.insert_term_to_terms_index(term,term_freq_in_tweet)
+            self.insert_term_to_terms_index(term, term_freq_in_tweet)
         else:
             self.insert_term_to_terms_index(term, term_freq_in_tweet)
 
@@ -78,7 +81,6 @@ class Indexer:
         self.terms_index[term][0] += 1  # df
         self.terms_index[term][1] += term_freq_in_tweet  # term_freq_in_corpus
         self.terms_index[term][2].add(self.doc_id)  # set of docs
-
 
     # after indexing the terms, updates the tweet's information in the indexer.
     # if the postings file for the tweets is too large, it is moved to the disc and emptied in memory.
@@ -94,7 +96,6 @@ class Indexer:
         # move tweets postings to disc if needed
         if self.postings_too_large(self.doc_id, self.config.get_tweets_postings_file_size()):
             self.dump_tweet_postings_to_disc()
-
 
     def postings_too_large(self, current_postings_size, optimal_file_size):
         """
@@ -135,11 +136,11 @@ class Indexer:
         :return:
         """
         for i in range(self.tweets_postings_counter):
-            tweets_postings_file = utils.load_obj(str(i+1), self.config.get_tweets_postings_path())
+            tweets_postings_file = utils.load_obj(str(i + 1), self.config.get_tweets_postings_path())
             for doc_id in tweets_postings_file.keys():
                 tweet_posting = tweets_postings_file[doc_id]
                 self.update_single_tweet_postings(tweet_posting)
-            utils.save_obj(tweets_postings_file, str(i+1), self.config.get_tweets_postings_path())
+            utils.save_obj(tweets_postings_file, str(i + 1), self.config.get_tweets_postings_path())
 
     def update_single_tweet_postings(self, tweet_posting):
         """
@@ -191,11 +192,19 @@ class Indexer:
     def get_tweets_postings_counter(self):
         return self.tweets_postings_counter
 
-
     def dump_tweet_postings_to_disc(self):
         #  write the postings to disc and empty the dictionary in memory.
         self.tweets_postings_counter += 1
         utils.save_obj(self.tweets_postings_file, str(self.tweets_postings_counter),
                        self.config.get_tweets_postings_path())
         self.tweets_postings_file.clear()
+
+    def update(self, subject: subject_interface) -> None:
+        if self.current_running_indexer_thread is not None:
+            self.current_running_indexer_thread.join()
+        self.current_running_indexer_thread = threading.Thread(target=self.add_new_doc,
+                                                               args=(subject.remove_object_from_queue(),))
+        self.current_running_indexer_thread.start()
+
+
 
