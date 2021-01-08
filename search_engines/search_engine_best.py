@@ -2,7 +2,7 @@ import pandas as pd
 
 import utils
 from parser_classes.parsers.parser_module import Parse
-from indexer import Indexer
+from indexers.indexer import Indexer
 from searchers.thesaurus_searcher import Searcher
 from configuration import ConfigClass
 
