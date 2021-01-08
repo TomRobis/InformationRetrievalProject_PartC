@@ -134,7 +134,5 @@ def main():
     se = SearchEngine(config)
     se.build_index_from_parquet(config.get_corpusPath())
 
-    # start_time = time.time()
     n_res, res = se.search('operation lockstep rockefeller')
-    # print('query returned in: ' + str(time.time() -start_time) + ' seconds')
-    print("Tweet id: {}".format(res))
+    print("Tweet id: {}".format(res[:1]))

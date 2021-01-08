@@ -33,7 +33,7 @@ class Searcher:
             return 0, 0
         self._ranker = BM25_ranker.BM25_ranker(relevant_tweets_with_information, qterm_to_idf_dict,
                                                avg_doc_length=self._indexer.get_average_doc_length(),
-                                               k=self.config.get_bm25_k(), b=self.config.get_bm25_b())
+                                               k=self._indexer.get_config().get_bm25_k(), b=self._indexer.get_config().get_bm25_b())
         ranked_tweet_ids = self._ranker.rank_relevant_docs()
         return self._ranker.retrieve_top_k(ranked_tweet_ids)
 
