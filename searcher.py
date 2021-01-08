@@ -1,6 +1,8 @@
 import math
 import utils
-from rankers import BM25_ranker
+import ranker
+from query_expandors.thesaurus_expandor import thesaurus_expandor
+from query_expandors.wordnet_expandor import wordnet_expandor
 
 
 class Searcher:
@@ -10,6 +12,7 @@ class Searcher:
         self._indexer = indexer
         self._ranker = None
         self._model = model
+        self.query_expandor = thesaurus_expandor()
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -26,14 +29,16 @@ class Searcher:
             and the last is the least relevant result.
         """
         parsed_query = self._parser.parse_sentence(query)
+        if self.query_expandor is not None:
+            parsed_query = self.query_expandor.expand_query(parsed_query=parsed_query)
         parsed_query = self.remove_irrelevant_query_terms(parsed_query)
         qterm_to_idf_dict = self.get_qterm_to_idf_dict(parsed_query)
         relevant_tweets_with_information = self.relevant_docs_from_posting(parsed_query=parsed_query)
         if not relevant_tweets_with_information:
             return 0, 0
-        self._ranker = BM25_ranker.BM25_ranker(relevant_tweets_with_information, qterm_to_idf_dict,
-                                               avg_doc_length=self._indexer.get_average_doc_length(),
-                                               k=self._indexer.get_config().get_bm25_k(), b=self._indexer.get_config().get_bm25_b())
+        self._ranker = ranker.Ranker(relevant_tweets_with_information, qterm_to_idf_dict,
+                                     avg_doc_length=self._indexer.get_average_doc_length(),
+                                     k=self._indexer.get_config().get_bm25_k(), b=self._indexer.get_config().get_bm25_b())
         ranked_tweet_ids = self._ranker.rank_relevant_docs()
         return self._ranker.retrieve_top_k(ranked_tweet_ids)
 

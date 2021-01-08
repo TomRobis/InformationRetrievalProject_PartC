@@ -1,7 +1,5 @@
-import math
 
-
-class BM25_ranker:
+class Ranker:
     def __init__(self, relevant_tweets_with_info, q_term_to_idf_dict, avg_doc_length, k, b):
         self.relevant_tweets_with_info = relevant_tweets_with_info
         self.q_term_to_idf_dict = q_term_to_idf_dict
@@ -32,7 +30,7 @@ class BM25_ranker:
             tweet_id_to_rank[tweet_posting[0]] = bm25_sim_rank
         return [k for k, v in sorted(tweet_id_to_rank.items(), key=lambda item: item[1], reverse=True)]
 
-    def retrieve_top_k(self,sorted_relevant_doc, k=1):
+    def retrieve_top_k(self,sorted_relevant_doc, k=250):
         """
         return a list of top K tweets based on their ranking from highest to lowest
         :param sorted_relevant_doc: list of all candidates docs.

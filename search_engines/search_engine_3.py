@@ -2,8 +2,8 @@ import pandas as pd
 
 import utils
 from parser_classes.parsers.parser_module import Parse
-from indexers.BM25_indexer import Indexer
-from searchers.BM25_searcher import Searcher
+from indexer import Indexer
+from searcher import Searcher
 from configuration import ConfigClass
 
 

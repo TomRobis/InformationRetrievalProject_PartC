@@ -34,9 +34,7 @@ class ConfigClass:
         self.index_name = 'idx_bench.pkl'
         self.stemming = True
         self.spelling_correction = True
-        self.thesaurus_query_expandor = thesaurus_expandor()  # assuming we support only one expandor
-        self.wordnet_query_expandor = wordnet_expandor()  # assuming we support only one expandor
-        self.bm25_k = 1.6  # [1.2,2]
+        self.bm25_k = 1.2  # [1.2,2], 1.2 tested and is best rn
         self.bm25_b = 0.75
         print('Project was created successfully..')
 
@@ -78,12 +76,6 @@ class ConfigClass:
 
     def get_stemming(self):
         return self.stemming
-
-    def get_wordnet_query_expandor(self):
-        return self.wordnet_query_expandor
-
-    def get_thesaurus_query_expandor(self):
-        return self.thesaurus_query_expandor
 
     def get_bm25_k(self):
         return self.bm25_k
