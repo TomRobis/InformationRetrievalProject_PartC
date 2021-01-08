@@ -1,5 +1,5 @@
 import math
-from ranker import Ranker
+from rankers.ranker import Ranker
 import utils
 
 
@@ -64,7 +64,7 @@ class Searcher:
         relevant_tweets = self.get_relevant_tweets(parsed_query)
         if not relevant_tweets:
             return
-        return self.get_relevant_tweets_information(relevant_tweets)  # get information for each term in query
+        return self.get_relevant_tweets_postings(relevant_tweets)  # get information for each term in query
 
     def get_relevant_tweets(self, parsed_query):
         """
@@ -79,7 +79,7 @@ class Searcher:
             relevant_tweets.update(set_of_relevant_docs_for_q_term)
         return relevant_tweets
 
-    def get_relevant_tweets_information(self, relevant_tweets):
+    def get_relevant_tweets_postings(self, relevant_tweets):
         """
         iterates over tweets postings and extracts postings of all relevant tweets.
         :param relevant_tweets: set of relevant tweets based on query's terms

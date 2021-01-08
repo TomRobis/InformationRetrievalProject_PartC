@@ -5,7 +5,7 @@ from spell_checker import spell_checker
 
 
 import math
-from ranker import Ranker
+from rankers.ranker import Ranker
 import utils
 
 

@@ -36,7 +36,8 @@ class ConfigClass:
         self.spelling_correction = True
         self.thesaurus_query_expandor = thesaurus_expandor()  # assuming we support only one expandor
         self.wordnet_query_expandor = wordnet_expandor()  # assuming we support only one expandor
-
+        self.bm25_k = 1.6  # [1.2,2]
+        self.bm25_b = 0.75
         print('Project was created successfully..')
 
     def get_corpusPath(self):
@@ -83,3 +84,9 @@ class ConfigClass:
 
     def get_thesaurus_query_expandor(self):
         return self.thesaurus_query_expandor
+
+    def get_bm25_k(self):
+        return self.bm25_k
+
+    def get_bm25_b(self):
+        return self.bm25_b

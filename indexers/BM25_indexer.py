@@ -17,6 +17,7 @@ class Indexer:
 
         self.tweets_postings_counter = 0
         self.doc_id = 0  # counter for the number of tweets in the corpus
+        self.average_doc_length = 0
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -40,6 +41,7 @@ class Indexer:
             @return: int - max_tf = maximal number of appearances of term in tweet
         """
         document_dictionary = document.term_doc_dictionary
+        self.average_doc_length += len(document_dictionary.keys())
         max_tf = 0
         for term in document_dictionary.keys():
             term_freq_in_tweet = document_dictionary[term]
@@ -130,6 +132,7 @@ class Indexer:
         """
         self.dump_tweet_postings_to_disc()
         self.update_tweets_postings()
+        self.average_doc_length = (self.average_doc_length / self.doc_id)
 
     def update_tweets_postings(self):
         """
@@ -158,16 +161,9 @@ class Indexer:
             # deletion from terms_index (del)  and postings (not saved in updated, "continue")
             if term in self.terms_index.keys() and self.terms_index[term][1] == 1:
                 del self.terms_index[term]
+                self.average_doc_length -= 1
                 continue
 
-    def get_config(self):
-        return self.config
-
-    def get_terms_index(self):
-        return self.terms_index
-
-    def get_tweets_postings_counter(self):
-        return self.tweets_postings_counter
 
 
     def dump_tweet_postings_to_disc(self):
@@ -180,3 +176,17 @@ class Indexer:
                        self.config.get_tweets_postings_path())
         self.tweets_postings_file.clear()
 
+    def get_config(self):
+        return self.config
+
+    def get_terms_index(self):
+        return self.terms_index
+
+    def get_tweets_postings_counter(self):
+        return self.tweets_postings_counter
+
+    def get_doc_id(self):
+        return self.doc_id
+
+    def get_average_doc_length(self):
+        return self.average_doc_length
