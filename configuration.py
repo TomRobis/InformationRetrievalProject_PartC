@@ -1,5 +1,6 @@
 import os
 
+from query_expandors.thesaurus_expandor import thesaurus_expandor
 from query_expandors.wordnet_expandor import wordnet_expandor
 
 
@@ -33,7 +34,8 @@ class ConfigClass:
         self.index_name = 'idx_bench.pkl'
         self.stemming = True
         self.spelling_correction = True
-        self.query_expandor = wordnet_expandor()  # assuming we support only one expandor
+        self.thesaurus_query_expandor = thesaurus_expandor()  # assuming we support only one expandor
+        self.wordnet_query_expandor = wordnet_expandor()  # assuming we support only one expandor
 
         print('Project was created successfully..')
 
@@ -76,5 +78,8 @@ class ConfigClass:
     def get_stemming(self):
         return self.stemming
 
-    def get_query_expandor(self):
-        return self.query_expandor
+    def get_wordnet_query_expandor(self):
+        return self.wordnet_query_expandor
+
+    def get_thesaurus_query_expandor(self):
+        return self.thesaurus_query_expandor

@@ -31,7 +31,7 @@ class Searcher:
             and the last is the least relevant result.
         """
         parsed_query = self._parser.parse_sentence(query)
-        parsed_query = self.remove_irrelevant_query_terms(parsed_query) #todo added
+        parsed_query = self.remove_irrelevant_query_terms(parsed_query)
         sigma_Wiq_squared, Wiq_dict = self.get_sigma_wiq_and_relevant_words_in_query(parsed_query)
         relevant_tweets_with_information = self.relevant_docs_from_posting(parsed_query=parsed_query)
         if not relevant_tweets_with_information:

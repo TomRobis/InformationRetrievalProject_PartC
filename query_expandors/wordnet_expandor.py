@@ -6,6 +6,11 @@ from query_expandors.i_query_expandor import i_query_expandor
 class wordnet_expandor(i_query_expandor):
 
     def expand_query(self,parsed_query) -> list:
+        """
+        expands query based on wordnet package.
+        :param parsed_query:
+        :return:
+        """
         words_added_to_query = []
         for term in parsed_query:
             syn_sets = self.get_syn_sets(term)

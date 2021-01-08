@@ -3,7 +3,7 @@ import pandas as pd
 import utils
 from parser_classes.parsers.parser_module import Parse
 from indexer import Indexer
-from searchers.wordnet_searcher import Searcher
+from searchers.thesaurus_searcher import Searcher
 from configuration import ConfigClass
 
 
@@ -135,6 +135,6 @@ def main():
     se.build_index_from_parquet(config.get_corpusPath())
 
     # start_time = time.time()
-    n_res, res = se.search('Bill Gates')
+    n_res, res = se.search('operation lockstep rockefeller')
     # print('query returned in: ' + str(time.time() -start_time) + ' seconds')
-    print("Tweet id: {}".format(res[0]))
+    print("Tweet id: {}".format(res))

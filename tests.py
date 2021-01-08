@@ -5,19 +5,10 @@
 import math
 
 from nltk.corpus import wordnet
-synonyms = []
-antonyms = []
-
-syn = wordnet.synsets("covid")
-print(syn[0].lemma_names()[0])
-    # for l in syn.lemmas():
-    #     synonyms.append(l.name())
-    #     if l.antonyms():
-    #         antonyms.append(l.antonyms()[0].name())
-
-
-
-print(set(synonyms))
-print(set(antonyms))
+# from nltk.corpus import lin_thesaurus as thes
+# word = 'hello'
+# scored = thes.scored_synonyms(word)[1][1]
+# scored = [k for k, v in sorted(scored, key=lambda item: item[1],reverse=True)][:5]
+# print(scored)
 
 

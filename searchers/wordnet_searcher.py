@@ -19,7 +19,7 @@ class Searcher:
         self._indexer = indexer
         self._ranker = None
         self._model = model
-        self.query_expandor = self._indexer.get_config().get_query_expandor()
+        self.query_expandor = self._indexer.get_config().get_wordnet_query_expandor()
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -37,9 +37,9 @@ class Searcher:
         """
 
         parsed_query = self._parser.parse_sentence(query)
-        parsed_query = self.remove_irrelevant_query_terms(parsed_query)
         if self.query_expandor is not None:
             parsed_query = self.query_expandor.expand_query(parsed_query=parsed_query)
+        parsed_query = self.remove_irrelevant_query_terms(parsed_query)
         sigma_Wiq_squared, Wiq_dict = self.get_sigma_wiq_and_relevant_words_in_query(parsed_query)
         relevant_tweets_with_information = self.relevant_docs_from_posting(parsed_query=parsed_query)
         if not relevant_tweets_with_information:
