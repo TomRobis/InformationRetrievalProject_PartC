@@ -1,13 +1,17 @@
 import pandas as pd
-
 import utils
+from configuration import ConfigClass
 from parser_classes.parsers.parser_module import Parse
 from indexers.indexer import Indexer
-from searchers.wordnet_searcher import Searcher
-from configuration import ConfigClass
+from searchers.searcher import Searcher
+
+from query_expandors.wordnet_expandor import wordnet_expandor
 
 
 # DO NOT CHANGE THE CLASS NAME
+from spell_checker import spell_checker
+
+
 class SearchEngine:
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -39,6 +43,7 @@ class SearchEngine:
             # index the document data
             self._indexer.add_new_doc(parsed_document)
         print('Finished parsing and indexing. commencing post processing...')
+        # make sure the postings and indexer are up to date
         self._indexer.post_process()
         print('Finished post processing.')
         # self._indexer.save_index(fn=self._indexer.get_config().get_index_name())
@@ -77,22 +82,23 @@ class SearchEngine:
             and the last is the least relevant result.
         """
         searcher = Searcher(self._parser, self._indexer, model=self._model)
-        return searcher.search(query)
+        # print('Commencing searching and ranking...')
+        n_res,res = searcher.search(query)
+        # print('Finished searching and ranking...')
+        return n_res,res
+
 
 def main():
     config = ConfigClass()
+    config.set_spell_checker(spell_checker=None)
+    config.set_query_expandor(query_expandor=wordnet_expandor())
 
     # create parent directories for postings
     utils.create_parent_dir(config.get_stemming_dir_path())
-    utils.create_parent_dir(config.get_terms_postings_path())
     utils.create_parent_dir(config.get_tweets_postings_path())
 
     se = SearchEngine(config)
     se.build_index_from_parquet(config.get_corpusPath())
 
-    # start_time = time.time()
-    n_res,res = se.search('Bill Gates')
-    # print('query returned in: ' + str(time.time() -start_time) + ' seconds')
+    n_res, res = se.search('operation lockstep rockefeller')
     print("Tweet id: {}".format(res))
-
-

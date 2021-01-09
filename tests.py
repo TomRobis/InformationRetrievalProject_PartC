@@ -14,6 +14,5 @@ from nltk.corpus import wordnet
 
 # print(math.log(math.exp(1)))
 
-a = 'baby oh'
-print(len(a.split()) > 1)
-
+a = ['a','b','c']
+print(a[:None])

@@ -1,11 +1,7 @@
-# DO NOT MODIFY CLASS NAME
-import math
-
 import utils
 
 
-
-
+# DO NOT MODIFY CLASS NAME
 class Indexer:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -17,6 +13,7 @@ class Indexer:
 
         self.tweets_postings_counter = 0
         self.doc_id = 0  # counter for the number of tweets in the corpus
+        self.average_doc_length = 0
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -40,6 +37,7 @@ class Indexer:
             @return: int - max_tf = maximal number of appearances of term in tweet
         """
         document_dictionary = document.term_doc_dictionary
+        self.average_doc_length += len(document_dictionary.keys())
         max_tf = 0
         for term in document_dictionary.keys():
             term_freq_in_tweet = document_dictionary[term]
@@ -62,12 +60,12 @@ class Indexer:
         upper_case_term = term[0].upper() + term[1:]
         if lower_case_term not in self.terms_index.keys() and upper_case_term not in self.terms_index.keys():  # term never indexed before
             self.terms_index[term] = [0, 0, set()]
-            self.insert_term_to_terms_index(term,term_freq_in_tweet)
+            self.insert_term_to_terms_index(term, term_freq_in_tweet)
         elif lower_case_term in self.terms_index.keys():
             self.insert_term_to_terms_index(lower_case_term, term_freq_in_tweet)
         elif term[0].islower() and term not in self.terms_index.keys():
             self.terms_index[term] = self.terms_index.pop(upper_case_term)
-            self.insert_term_to_terms_index(term,term_freq_in_tweet)
+            self.insert_term_to_terms_index(term, term_freq_in_tweet)
         else:
             self.insert_term_to_terms_index(term, term_freq_in_tweet)
 
@@ -75,7 +73,6 @@ class Indexer:
         self.terms_index[term][0] += 1  # df
         self.terms_index[term][1] += term_freq_in_tweet  # term_freq_in_corpus
         self.terms_index[term][2].add(self.doc_id)  # set of docs
-
 
     # after indexing the terms, updates the tweet's information in the indexer.
     # if the postings file for the tweets is too large, it is moved to the disc and emptied in memory.
@@ -86,12 +83,15 @@ class Indexer:
         :param document: Document object containing some information of the tweet.
         :param max_tf: int: indicating the highest number of appearances of any term that has appeared in the doc.
         """
-        self.tweets_postings_file[self.doc_id] = [document.tweet_id, max_tf, document.term_doc_dictionary]
+        term_doc_dict = document.term_doc_dictionary
+        for term in term_doc_dict.keys():
+            term_doc_dict[term] = [term_doc_dict[term]]
+
+        self.tweets_postings_file[self.doc_id] = [document.tweet_id, max_tf, term_doc_dict]
 
         # move tweets postings to disc if needed
         if self.postings_too_large(self.doc_id, self.config.get_tweets_postings_file_size()):
             self.dump_tweet_postings_to_disc()
-
 
     def postings_too_large(self, current_postings_size, optimal_file_size):
         """
@@ -130,6 +130,7 @@ class Indexer:
         """
         self.dump_tweet_postings_to_disc()
         self.update_tweets_postings()
+        self.average_doc_length = (self.average_doc_length / self.doc_id)
 
     def update_tweets_postings(self):
         """
@@ -137,11 +138,11 @@ class Indexer:
         :return:
         """
         for i in range(self.tweets_postings_counter):
-            tweets_postings_file = utils.load_obj(str(i+1), self.config.get_tweets_postings_path())
+            tweets_postings_file = utils.load_obj(str(i + 1), self.config.get_tweets_postings_path())
             for doc_id in tweets_postings_file.keys():
                 tweet_posting = tweets_postings_file[doc_id]
                 self.update_single_tweet_postings(tweet_posting)
-            utils.save_obj(tweets_postings_file, str(i+1), self.config.get_tweets_postings_path())
+            utils.save_obj(tweets_postings_file, str(i + 1), self.config.get_tweets_postings_path())
 
     def update_single_tweet_postings(self, tweet_posting):
         """
@@ -149,42 +150,11 @@ class Indexer:
         once it has been updated, calculcates a sigma_WIJ value of the tweet and tf-idf of every term in it.
         :param tweet_posting: a posting of a single tweet.
         """
-        sigma_wij = 0
-        updated_term_doc_dict = dict()
         term_doc_dict = tweet_posting[2]
         for term in term_doc_dict.keys():
-            lower_case_term = term[0].lower() + term[1:]
-            # dont write to new dict = delete,  when term_freq_in_corpus == 1.
-            # deletion from terms_index (del)  and postings (not saved in updated, "continue")
             if term in self.terms_index.keys() and self.terms_index[term][1] == 1:
                 del self.terms_index[term]
-                continue
-            # calculates tf-idf with term_freq_in_tweet, max_tf, df and N. the upper-case term
-            # is removed and replaced later with an entry of its' lower_case form as key and a tf-idf value
-            elif term[0].isupper() and lower_case_term in self.terms_index.keys():
-                df = self.terms_index[lower_case_term][0]
-            else:
-                df = self.terms_index[term][0]
-            tf_idf = self.calculate_tf_idf(term_doc_dict[term], tweet_posting[1], df, self.doc_id)
-            updated_term_doc_dict[lower_case_term] = tf_idf
-            sigma_wij += math.pow(tf_idf, 2)
-        tweet_posting[1] = sigma_wij
-        tweet_posting[2] = updated_term_doc_dict
-
-    def calculate_tf_idf(self, term_freq_in_tweet, max_tf, df, N):
-        tf = term_freq_in_tweet / max_tf
-        idf = math.log((N / df), self.config.get_log_basis_for_idf())
-        return tf * idf
-
-    def get_config(self):
-        return self.config
-
-    def get_terms_index(self):
-        return self.terms_index
-
-    def get_tweets_postings_counter(self):
-        return self.tweets_postings_counter
-
+                self.average_doc_length -= 1
 
     def dump_tweet_postings_to_disc(self):
         """
@@ -196,3 +166,17 @@ class Indexer:
                        self.config.get_tweets_postings_path())
         self.tweets_postings_file.clear()
 
+    def get_config(self):
+        return self.config
+
+    def get_terms_index(self):
+        return self.terms_index
+
+    def get_tweets_postings_counter(self):
+        return self.tweets_postings_counter
+
+    def get_doc_id(self):
+        return self.doc_id
+
+    def get_average_doc_length(self):
+        return self.average_doc_length

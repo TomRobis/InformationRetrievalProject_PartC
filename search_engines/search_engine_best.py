@@ -2,12 +2,17 @@ import pandas as pd
 
 import utils
 from parser_classes.parsers.parser_module import Parse
-from indexers.mish_mash_indexer import Indexer
-from searchers.mish_mash_searcher import Searcher
+from indexers.cos_sim_bm25_indexer import Indexer
+from query_expandors.thesaurus_expandor import thesaurus_expandor
+from query_expandors.wordnet_expandor import wordnet_expandor
+from searchers.cos_sim_bm25_searcher import Searcher
 from configuration import ConfigClass
 
 
 # DO NOT CHANGE THE CLASS NAME
+from spell_checker import spell_checker
+
+
 class SearchEngine:
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -78,64 +83,23 @@ class SearchEngine:
             and the last is the least relevant result.
         """
         searcher = Searcher(self._parser, self._indexer, model=self._model)
-        return searcher.search(query)
-
-    def test_build_index_from_parquet(self, fn):  # todo delete when submitting
-        """
-        Reads parquet file and passes it to the parser, then indexer.
-        Input:
-            fn - path to parquet file
-        Output:
-            No output, just modifies the internal _indexer object.
-        """
-        # df = pd.read_parquet(fn, engine="pyarrow")
-        # documents_list = df.values.tolist()
-        # # Iterate over every document in the file
-        document_1 = ['12809215422436591023', 'Wed Jul 08 17:47:48 +0000 2020', "naor asd banana tom",
-                      '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
-                      '[[117,140]]', None, None, None, None, None, None, None, None, None]
-        document_2 = ['1280921542243659110', 'Wed Jul 08 17:47:48 +0000 2020',
-                      "banana morty rick Baby asd BanaNa fall Ping Ball",
-                      '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
-                      '[[117,140]]', None, None, None, None, None, None, None, None, None]
-        document_3 = ['1280921542243659101', 'Wed Jul 08 17:47:48 +0000 2020',
-                      "Banana asd rick banana banana banana banana banana banana",
-                      '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
-                      '[[117,140]]', None, None, None, None, None, None, None, None, None]
-        document_4 = ['128092154224365910222', 'Wed Jul 08 17:47:48 +0000 2020',
-                      "lalala hello lalala",
-                      '{"https://t.co/4A5TDSyjoY":"https://twitter.com/i/web/status/1280921542243659776"}',
-                      '[[117,140]]', None, None, None, None, None, None, None, None, None]
-        documents_list = [document_1, document_2, document_3, document_4]
-        number_of_documents = 0
-        for idx, document in enumerate(documents_list):
-            # parse the document
-            parsed_document = self._parser.parse_doc(document)
-            number_of_documents += 1
-            # index the document data
-            self._indexer.add_new_doc(parsed_document)
-
-            if number_of_documents == 1:
-                self._indexer.dump_tweet_postings_to_disc()
-        print('Finished parsing and indexing. commencing post processing...')
-        self._indexer.post_process()
-        print('Finished post processing.')
-        # self._indexer.save_index(self._indexer.config.get_stemming_dir_path())
+        # print('Commencing searching and ranking...')
+        n_res,res = searcher.search(query)
+        # print('Finished searching and ranking...')
+        return n_res,res
 
 
 def main():
     config = ConfigClass()
+    config.set_spell_checker(spell_checker=None) #todo fix because he doesn't use our main
+    config.set_query_expandor(query_expandor=None) #todo fix because he doesn't use our main
 
     # create parent directories for postings
     utils.create_parent_dir(config.get_stemming_dir_path())
-    utils.create_parent_dir(config.get_terms_postings_path())
     utils.create_parent_dir(config.get_tweets_postings_path())
 
     se = SearchEngine(config)
     se.build_index_from_parquet(config.get_corpusPath())
 
-
-    # start_time = time.time()
     n_res, res = se.search('operation lockstep rockefeller')
-    # print('query returned in: ' + str(time.time() -start_time) + ' seconds')
     print("Tweet id: {}".format(res))

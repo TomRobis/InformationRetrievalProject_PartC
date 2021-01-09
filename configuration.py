@@ -20,24 +20,27 @@ class ConfigClass:
 
         self.corpusPath = os.path.join('data', 'benchmark_data_train.snappy.parquet')
         self.savedFileMainFolder = ''
+
+        self.stemming = True
         self.saveFilesWithStem = self.savedFileMainFolder + "WithStem"
         # self.saveFilesWithoutStem = self.savedFileMainFolder + "\\WithoutStem"
-        self.toStem = True
 
-        self.terms_postings_path = self.saveFilesWithStem + "\\term_postings"
         self.tweets_postings_path = self.saveFilesWithStem + "\\tweet_postings"
+
+        self.spell_checker = None
+        self.query_expandor = None
+
         #  threshold for file sizes, relates to number of terms kept in each posting
-        self.OPTIMAL_TERMS_FILE_SIZE = 100000
         self.OPTIMAL_TWEETS_FILE_SIZE = 100000
-        self.post_process_cache_size = 1
-        self.log_basis_for_idf = 2
+
         self.index_name = 'idx_bench.pkl'
-        self.stemming = True
-        self.spelling_correction = True
-        self.bm25_k = 1.2  # [1.2,2], 1.2 tested and is best rn
+
+        self.log_basis_for_idf = 2
+        self.bm25_k = 1.2  # [1.2,2]
         self.bm25_b = 0.75
-        self.rankers_weight_distribution = 0.25 # how much to shave off existing rankers.
-        print('Project was created successfully..')
+        self.rankers_weight_distribution = 0  # how much to shave off existing rankers.
+
+        print('Configurations were assigned successfully...')
 
     def get_corpusPath(self):
         return self.corpusPath
@@ -48,14 +51,8 @@ class ConfigClass:
     def get_download_model(self):
         return self._download_model
 
-    def get_terms_postings_path(self):
-        return self.terms_postings_path
-
     def get_tweets_postings_path(self):
         return self.tweets_postings_path
-
-    def get_terms_postings_file_size(self):
-        return self.OPTIMAL_TERMS_FILE_SIZE
 
     def get_tweets_postings_file_size(self):
         return self.OPTIMAL_TWEETS_FILE_SIZE
@@ -86,3 +83,15 @@ class ConfigClass:
 
     def get_rankers_weight_distribution(self):
         return self.rankers_weight_distribution
+
+    def get_spell_checker(self):
+        return self.spell_checker
+
+    def get_query_expandor(self):
+        return self.query_expandor
+
+    def set_spell_checker(self, spell_checker):
+        self.spell_checker = spell_checker
+
+    def set_query_expandor(self, query_expandor):
+        self.query_expandor = query_expandor

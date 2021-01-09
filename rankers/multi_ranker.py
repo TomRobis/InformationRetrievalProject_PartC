@@ -1,7 +1,7 @@
 from rankers.abstract_ranker import abstract_ranker
 
 
-class mish_mash_ranker(abstract_ranker):
+class Ranker(abstract_ranker):
 
     def __init__(self, tweets_to_rank_as_set):
         self.ranker_to_weight_dict = dict()

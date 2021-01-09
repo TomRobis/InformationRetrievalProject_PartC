@@ -31,7 +31,6 @@ class Ranker(simple_ranker):
             elif self.min_value > bm25_sim_rank:
                 self.min_value = bm25_sim_rank
 
-        # todo added because of mish_mash_ranker - add to config
         normalized_bm_25_sim_rank = self.noramlize_rank(bm25_sim_rank)
 
         return tweet_posting[0], normalized_bm_25_sim_rank
