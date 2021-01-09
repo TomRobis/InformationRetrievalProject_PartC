@@ -4,7 +4,7 @@
 
 import math
 
-from query_expandors.thesaurus_expandor import thesaurus_expandor
+from query_expandors.thesaurus_expander import thesaurus_expander
 from rankers.cos_sim_ranker import Ranker
 import utils
 

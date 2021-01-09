@@ -2,7 +2,7 @@ import csv
 import pickle
 from os import mkdir
 from os.path import isdir
-
+import pandas as pd
 # import requests
 import zipfile
 import re
@@ -79,5 +79,18 @@ def create_parent_dir(path):
     if path:
         if not isdir(path):
             mkdir(path)
+
+
+def write_list_to_text_file(file_path,target_list):
+    """
+    converts list to string and writes to text file, with spaces between each entry.
+    :param file_path:
+    :param target_list:
+    :return:
+    """
+    str1 = ' '
+    text_file = open(file_path, "w")
+    text_file.write(str1.join(target_list))
+    text_file.close()
 
 

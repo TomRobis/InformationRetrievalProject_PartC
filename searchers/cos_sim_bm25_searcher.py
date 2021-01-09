@@ -18,7 +18,7 @@ class Searcher:
         self._ranker = None
         self._model = model
         self.spelling_checker = self._indexer.get_config().get_spell_checker()
-        self.query_expandor = self._indexer.get_config().get_query_expandor()
+        self.query_expander = self._indexer.get_config().get_query_expander()
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -36,8 +36,8 @@ class Searcher:
         """
         parsed_query = self._parser.parse_sentence(query)
         # expand the query in some way.
-        if self.query_expandor is not None:
-            parsed_query = self.query_expandor.expand_query(parsed_query=parsed_query)
+        if self.query_expander is not None:
+            parsed_query = self.query_expander.expand_query(parsed_query=parsed_query)
 
         # use spelling correction if applied.
         if self.spelling_checker is not None:

@@ -19,7 +19,7 @@ class SearchEngine:
         self._model = None
 
         config.set_spell_checker(spell_checker=spell_checker())
-        config.set_query_expandor(query_expandor=None)
+        config.set_query_expander(query_expandor=None)
 
         # create parent directories for postings
         utils.create_parent_dir(config.get_stemming_dir_path())

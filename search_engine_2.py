@@ -3,7 +3,7 @@ import pandas as pd
 import utils
 from parser_classes.parsers.parser_module import Parse
 from indexers.indexer import Indexer
-from query_expandors.wordnet_expandor import wordnet_expandor
+from query_expandors.wordnet_expander import wordnet_expander
 from searchers.searcher import Searcher
 from configuration import ConfigClass
 
@@ -20,7 +20,7 @@ class SearchEngine:
         self._model = None
 
         config.set_spell_checker(spell_checker=None)
-        config.set_query_expandor(query_expandor=wordnet_expandor())
+        config.set_query_expander(query_expandor=wordnet_expander())
 
         # create parent directories for postings
         utils.create_parent_dir(config.get_stemming_dir_path())

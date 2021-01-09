@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class i_query_expandor(ABC):
+class i_query_expander(ABC):
 
     @abstractmethod
     def expand_query(self, parsed_query) -> dict:

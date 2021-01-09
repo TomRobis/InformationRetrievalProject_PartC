@@ -1,9 +1,9 @@
 from nltk.corpus import wordnet
 
-from query_expandors.i_query_expandor import i_query_expandor
+from query_expandors.i_query_expander import i_query_expander
 
 
-class wordnet_expandor(i_query_expandor):
+class wordnet_expander(i_query_expander):
 
     def expand_query(self,parsed_query) -> list:
         """

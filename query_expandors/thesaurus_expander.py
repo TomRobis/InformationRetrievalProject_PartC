@@ -1,8 +1,8 @@
-from query_expandors.i_query_expandor import i_query_expandor
+from query_expandors.i_query_expander import i_query_expander
 from nltk.corpus import lin_thesaurus as thes
 
 
-class thesaurus_expandor(i_query_expandor):
+class thesaurus_expander(i_query_expander):
 
     def expand_query(self, parsed_query) -> list:
         """

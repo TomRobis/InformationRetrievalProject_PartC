@@ -1,7 +1,7 @@
 import os
 
-from query_expandors.thesaurus_expandor import thesaurus_expandor
-from query_expandors.wordnet_expandor import wordnet_expandor
+from query_expandors.thesaurus_expander import thesaurus_expander
+from query_expandors.wordnet_expander import wordnet_expander
 
 
 class ConfigClass:
@@ -27,7 +27,7 @@ class ConfigClass:
         self.tweets_postings_path = os.path.join(self.saveFilesWithStem, 'tweet_postings')
 
         self.spell_checker = None
-        self.query_expandor = None
+        self.query_expander = None
 
         #  threshold for file sizes, relates to number of terms kept in each posting
         self.OPTIMAL_TWEETS_FILE_SIZE = 100000
@@ -86,11 +86,11 @@ class ConfigClass:
     def get_spell_checker(self):
         return self.spell_checker
 
-    def get_query_expandor(self):
-        return self.query_expandor
+    def get_query_expander(self):
+        return self.query_expander
 
     def set_spell_checker(self, spell_checker):
         self.spell_checker = spell_checker
 
-    def set_query_expandor(self, query_expandor):
-        self.query_expandor = query_expandor
+    def set_query_expander(self, query_expandor):
+        self.query_expander = query_expandor
