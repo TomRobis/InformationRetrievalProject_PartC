@@ -16,14 +16,19 @@ class mish_mash_ranker(abstract_ranker):
         :return:
         """
         if not isinstance(ranker, abstract_ranker):
-            raise TypeError('mish_mash_ranker only accepts rankers! you should be ashamed of yourself!')
-        elif weight > 1 or weight < 0:
-            raise ValueError('weight must be between 0 and 1')
+            print('mish_mash_ranker only accepts rankers! you should be ashamed of yourself!')
+            return
+        elif weight > 1 or weight <= 0:
+            # print('mish_mash_ranker only accepts rankers with weighting in range (0,1]. it is not added!')
+            return
         elif not self.ranker_to_weight_dict:  # first ranker must be weighted as 1
             weight = 1
+        elif weight == 1:  # if a ranker wants all the weight, the rest are removed.
+            self.ranker_to_weight_dict.clear()
+        else:  # not the first weighting.
+            for existing_ranker in self.ranker_to_weight_dict.keys():
+                self.ranker_to_weight_dict[existing_ranker] -= (self.ranker_to_weight_dict[existing_ranker] * weight)
         self.ranker_to_weight_dict[ranker] = weight
-        for ranker in self.ranker_to_weight_dict.keys():
-            self.ranker_to_weight_dict[ranker] *= (weight / 100)
 
     def rank_relevant_docs(self) -> list:
         """
@@ -32,7 +37,7 @@ class mish_mash_ranker(abstract_ranker):
         """
         tweet_id_to_final_rank = dict()
         for doc_id in self.tweets_to_rank:
-            tweet_id,final_rank = self.rank_relevant_doc(doc_id)
+            tweet_id, final_rank = self.rank_relevant_doc(doc_id)
             tweet_id_to_final_rank[tweet_id] = final_rank
         ranked_docs_as_list = self.sort_relevant_docs(tweet_id_to_final_rank)
         return ranked_docs_as_list

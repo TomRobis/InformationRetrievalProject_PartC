@@ -15,7 +15,7 @@ class abstract_ranker(ABC):
         """
         pass
 
-    def retrieve_top_k(self, sorted_relevant_doc, k=250):
+    def retrieve_top_k(self, sorted_relevant_doc, k=500):
         """
         return a list of top K tweets based on their ranking from highest to lowest
         :param sorted_relevant_doc: list of all candidates docs.

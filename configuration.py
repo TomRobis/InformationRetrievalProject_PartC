@@ -36,7 +36,7 @@ class ConfigClass:
         self.spelling_correction = True
         self.bm25_k = 1.2  # [1.2,2], 1.2 tested and is best rn
         self.bm25_b = 0.75
-        self.rankers_weight_distribution = 0.1 # how much to shave off existing rankers.
+        self.rankers_weight_distribution = 0.25 # how much to shave off existing rankers.
         print('Project was created successfully..')
 
     def get_corpusPath(self):

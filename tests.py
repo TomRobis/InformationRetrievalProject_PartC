@@ -14,5 +14,6 @@ from nltk.corpus import wordnet
 
 # print(math.log(math.exp(1)))
 
-a = {'a':1,'b':2}
-print(set(a.keys()))
+a = 'baby oh'
+print(len(a.split()) > 1)
+

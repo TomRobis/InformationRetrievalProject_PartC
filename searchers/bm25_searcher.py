@@ -28,8 +28,8 @@ class Searcher:
             and the last is the least relevant result.
         """
         parsed_query = self._parser.parse_sentence(query)
-        if self.query_expandor is not None:
-            parsed_query = self.query_expandor.expand_query(parsed_query=parsed_query)
+        # if self.query_expandor is not None:
+            # parsed_query = self.query_expandor.expand_query(parsed_query=parsed_query)
         parsed_query = self.remove_irrelevant_query_terms(parsed_query)
 
         qterm_to_idf_dict = self.get_qterm_to_idf_dict(parsed_query)

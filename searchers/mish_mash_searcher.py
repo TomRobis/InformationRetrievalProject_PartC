@@ -42,7 +42,7 @@ class Searcher:
         parsed_query = self.remove_irrelevant_query_terms(parsed_query)
 
 
-        sigma_Wiq_squared, Wiq_dict = self.get_sigma_wiq_and_relevant_words_in_query(parsed_query) #todo add
+        sigma_Wiq_squared, Wiq_dict = self.get_sigma_wiq_and_relevant_words_in_query(parsed_query)
         qterm_to_idf_dict = self.get_qterm_to_idf_dict(parsed_query)
 
         relevant_tweets_with_information = self.relevant_docs_from_posting(parsed_query=parsed_query)
@@ -143,7 +143,7 @@ class Searcher:
         bm_ranker = bm25_ranker.Ranker(relevant_tweets_with_information, qterm_to_idf_dict,
                                           avg_doc_length=self._indexer.get_average_doc_length(),
                                           k=self._indexer.get_config().get_bm25_k(), b=self._indexer.get_config().get_bm25_b())
-        relevant_tweets_set = set(relevant_tweets_with_information.keys())
-        self._ranker = mish_mash_ranker(relevant_tweets_set)
+        relevant_doc_ids_set = set(relevant_tweets_with_information.keys())
+        self._ranker = mish_mash_ranker(relevant_doc_ids_set)
         self._ranker.add_ranker(cs_ranker,1)
         self._ranker.add_ranker(bm_ranker,self._indexer.get_config().get_rankers_weight_distribution())
