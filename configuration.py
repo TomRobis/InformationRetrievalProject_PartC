@@ -18,14 +18,13 @@ class ConfigClass:
         '''
         self._download_model = False
 
-        self.corpusPath = os.path.join('data', 'benchmark_data_train.snappy.parquet')
-        self.savedFileMainFolder = ''
+        self.corpusPath = os.path.join('data', 'benchmark_data_train.snappy.parquet')  # todo what is corpus path?
+        self.savedFileMainFolder = ''  # todo which value does this have?
 
         self.stemming = True
-        self.saveFilesWithStem = self.savedFileMainFolder + "WithStem"
-        # self.saveFilesWithoutStem = self.savedFileMainFolder + "\\WithoutStem"
+        self.saveFilesWithStem = os.path.join(self.savedFileMainFolder, "WithStem")  # todo is this needed
 
-        self.tweets_postings_path = self.saveFilesWithStem + "\\tweet_postings"
+        self.tweets_postings_path = os.path.join(self.saveFilesWithStem, 'tweet_postings')
 
         self.spell_checker = None
         self.query_expandor = None
@@ -33,14 +32,14 @@ class ConfigClass:
         #  threshold for file sizes, relates to number of terms kept in each posting
         self.OPTIMAL_TWEETS_FILE_SIZE = 100000
 
-        self.index_name = 'idx_bench.pkl'
+        self.index_name = os.path.join(self.saveFilesWithStem, 'idx_bench.pkl')  # todo save this in curr dir or not?
 
         self.log_basis_for_idf = 2
         self.bm25_k = 1.2  # [1.2,2]
         self.bm25_b = 0.75
         self.rankers_weight_distribution = 0  # how much to shave off existing rankers.
 
-        print('Configurations were assigned successfully...')
+        # print('Configurations were assigned successfully...')
 
     def get_corpusPath(self):
         return self.corpusPath

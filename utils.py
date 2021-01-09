@@ -9,7 +9,7 @@ import re
 
 
 
-def save_obj(obj, name, path = ""):  #todo pkl removed part c
+def save_obj(obj, name, path = ""):
     """
     This function save an object as a pickle.
     :param obj: object to save
@@ -24,7 +24,7 @@ def save_obj(obj, name, path = ""):  #todo pkl removed part c
             pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 
-def load_obj(name, path = ""): #todo pkl removed part c
+def load_obj(name, path = ""):
     """
     This function will load a pickle file
     :param name: name of the pickle file
@@ -75,40 +75,9 @@ def unzip_file(file_path, target_dir):
     with zipfile.ZipFile(file_path, 'r') as z:
         z.extractall(target_dir)
 
-
-
-def get_dir_file(folder_name, file_name=''):  #todo os.join
-    routing_string = ""
-    if folder_name:
-        routing_string = folder_name
-        if file_name:
-            routing_string += '\\' + str(file_name) + '.pkl'
-    else:  # if folder name isn't received
-        raise ValueError('folder_path not given when retrieving a directory')
-    return routing_string
-
-
-
 def create_parent_dir(path):
     if path:
         if not isdir(path):
             mkdir(path)
 
-
-def read_from_txt_file(file_path):  # might change later, but right now only useful to queries file
-    read_lines = []
-    with open(file_path,encoding="utf8") as txt_file:
-        for line in txt_file:
-            read_lines.append(line[:-1])
-    return read_lines
-
-
-
-def write_answers_to_csv(answers_tuples,csv_path):
-    with open(csv_path, 'w',newline='') as myfile:
-        csv_writer = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-        # csv_writer.writerow(['tweet_id','rank','query_number'])
-        for row in answers_tuples:
-            row = [row[0],row[4],row[5]]
-            csv_writer.writerow(row)
 

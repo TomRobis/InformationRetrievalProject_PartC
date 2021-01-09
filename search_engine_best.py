@@ -48,10 +48,14 @@ class SearchEngine:
             number_of_documents += 1
             # index the document data
             self._indexer.add_new_doc(parsed_document)
-        print('Finished parsing and indexing. commencing post processing...')
+
+        # print('Finished parsing and indexing. commencing post processing...')
+
         # make sure the postings and indexer are up to date
         self._indexer.post_process()
-        print('Finished post processing.')
+
+        # print('Finished post processing.')
+
         # self._indexer.save_index(fn=self._indexer.get_config().get_index_name())
 
     # DO NOT MODIFY THIS SIGNATURE
