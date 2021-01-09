@@ -1,13 +1,14 @@
-
-
-
-
 import math
-from rankers.cos_sim_ranker import Ranker
+
+from query_expandors.thesaurus_expandor import thesaurus_expandor
+from rankers import cos_sim_ranker,bm25_ranker
 import utils
 
 
 # DO NOT MODIFY CLASS NAME
+from rankers.mish_mash_ranker import mish_mash_ranker
+
+
 class Searcher:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit. The model
@@ -19,7 +20,7 @@ class Searcher:
         self._indexer = indexer
         self._ranker = None
         self._model = model
-        self.query_expandor = self._indexer.get_config().get_wordnet_query_expandor()
+        self.query_expandor = thesaurus_expandor()
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -35,18 +36,22 @@ class Searcher:
             a list of tweet_ids where the first element is the most relevant
             and the last is the least relevant result.
         """
-
         parsed_query = self._parser.parse_sentence(query)
         if self.query_expandor is not None:
             parsed_query = self.query_expandor.expand_query(parsed_query=parsed_query)
         parsed_query = self.remove_irrelevant_query_terms(parsed_query)
-        sigma_Wiq_squared, Wiq_dict = self.get_sigma_wiq_and_relevant_words_in_query(parsed_query)
+
+
+        sigma_Wiq_squared, Wiq_dict = self.get_sigma_wiq_and_relevant_words_in_query(parsed_query) #todo add
+        qterm_to_idf_dict = self.get_qterm_to_idf_dict(parsed_query)
+
         relevant_tweets_with_information = self.relevant_docs_from_posting(parsed_query=parsed_query)
         if not relevant_tweets_with_information:
             return 0,0
-        self._ranker = Ranker(sigma_Wiq_squared,Wiq_dict,relevant_tweets_with_information)
-        ranked_tweet_ids = self._ranker.rank_relevant_doc()
-        return self._ranker.retrieve_top_k(ranked_tweet_ids)
+
+        self.create_mish_mash_ranker(relevant_tweets_with_information,sigma_Wiq_squared,Wiq_dict,qterm_to_idf_dict)
+        ranked_docs_as_list = self._ranker.rank_relevant_docs()
+        return self._ranker.retrieve_top_k(ranked_docs_as_list)
 
     def get_sigma_wiq_and_relevant_words_in_query(self, query_as_list):
         """
@@ -71,7 +76,7 @@ class Searcher:
         relevant_tweets = self.get_relevant_tweets(parsed_query)
         if not relevant_tweets:
             return
-        return self.get_relevant_tweets_information(relevant_tweets)  # get information for each term in query
+        return self.get_relevant_tweets_postings(relevant_tweets)  # get information for each term in query
 
     def get_relevant_tweets(self, parsed_query):
         """
@@ -86,7 +91,7 @@ class Searcher:
             relevant_tweets.update(set_of_relevant_docs_for_q_term)
         return relevant_tweets
 
-    def get_relevant_tweets_information(self, relevant_tweets):
+    def get_relevant_tweets_postings(self, relevant_tweets):
         """
         iterates over tweets postings and extracts postings of all relevant tweets.
         :param relevant_tweets: set of relevant tweets based on query's terms
@@ -100,7 +105,7 @@ class Searcher:
                     relevant_tweets_information[doc_id] = tweets_postings_file[doc_id]
         return relevant_tweets_information
 
-    def remove_irrelevant_query_terms(self, parsed_query):
+    def remove_irrelevant_query_terms(self, parsed_query): #todo added
         """
         only keeps the words out of the query that have appeared in the corpus, otherwise their inner-products are 0.
         also takes into account lower-case and upper-case forms.
@@ -118,6 +123,27 @@ class Searcher:
                 parsed_query_relevant_terms.append(upper_case_q_term)
         return parsed_query_relevant_terms
 
-    def calculate_tf_idf_for_q_term(self, q_term):
+    def calculate_tf_idf_for_q_term(self, q_term): #todo added
         return 1
 
+
+    def get_qterm_to_idf_dict(self, parsed_query):
+        q_term_to_idf = dict()
+        N = self._indexer.get_doc_id()  # num_of_tweets_in_corpus
+        terms_index = self._indexer.get_terms_index()
+        for q_term in parsed_query:
+            n_qi = terms_index[q_term][0]  # df
+            numerator = N - n_qi + 0.5
+            denominator = n_qi + 0.5
+            q_term_to_idf[q_term] = (math.log((numerator / denominator) + 1))
+        return q_term_to_idf
+
+    def create_mish_mash_ranker(self, relevant_tweets_with_information, sigma_Wiq_squared, Wiq_dict, qterm_to_idf_dict):
+        cs_ranker = cos_sim_ranker.Ranker(sigma_Wiq_squared,Wiq_dict,relevant_tweets_with_information)
+        bm_ranker = bm25_ranker.Ranker(relevant_tweets_with_information, qterm_to_idf_dict,
+                                          avg_doc_length=self._indexer.get_average_doc_length(),
+                                          k=self._indexer.get_config().get_bm25_k(), b=self._indexer.get_config().get_bm25_b())
+        relevant_tweets_set = set(relevant_tweets_with_information.keys())
+        self._ranker = mish_mash_ranker(relevant_tweets_set)
+        self._ranker.add_ranker(cs_ranker,1)
+        self._ranker.add_ranker(bm_ranker,self._indexer.get_config().get_rankers_weight_distribution())

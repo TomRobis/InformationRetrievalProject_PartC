@@ -2,8 +2,8 @@ import pandas as pd
 
 import utils
 from parser_classes.parsers.parser_module import Parse
-from indexer import Indexer
-from searcher import Searcher
+from indexers.mish_mash_indexer import Indexer
+from searchers.mish_mash_searcher import Searcher
 from configuration import ConfigClass
 
 
@@ -133,6 +133,7 @@ def main():
 
     se = SearchEngine(config)
     se.build_index_from_parquet(config.get_corpusPath())
+
 
     # start_time = time.time()
     n_res, res = se.search('operation lockstep rockefeller')

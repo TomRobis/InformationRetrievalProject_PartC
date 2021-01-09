@@ -1,8 +1,7 @@
 import math
 import utils
-import ranker
+from rankers import bm25_ranker
 from query_expandors.thesaurus_expandor import thesaurus_expandor
-from query_expandors.wordnet_expandor import wordnet_expandor
 
 
 class Searcher:
@@ -32,15 +31,18 @@ class Searcher:
         if self.query_expandor is not None:
             parsed_query = self.query_expandor.expand_query(parsed_query=parsed_query)
         parsed_query = self.remove_irrelevant_query_terms(parsed_query)
+
         qterm_to_idf_dict = self.get_qterm_to_idf_dict(parsed_query)
+
         relevant_tweets_with_information = self.relevant_docs_from_posting(parsed_query=parsed_query)
+
         if not relevant_tweets_with_information:
             return 0, 0
-        self._ranker = ranker.Ranker(relevant_tweets_with_information, qterm_to_idf_dict,
-                                     avg_doc_length=self._indexer.get_average_doc_length(),
-                                     k=self._indexer.get_config().get_bm25_k(), b=self._indexer.get_config().get_bm25_b())
-        ranked_tweet_ids = self._ranker.rank_relevant_docs()
-        return self._ranker.retrieve_top_k(ranked_tweet_ids)
+        self._ranker = bm25_ranker.Ranker(relevant_tweets_with_information, qterm_to_idf_dict,
+                                          avg_doc_length=self._indexer.get_average_doc_length(),
+                                          k=self._indexer.get_config().get_bm25_k(), b=self._indexer.get_config().get_bm25_b())
+        ranked_tweet_ids_as_list= self._ranker.rank_relevant_docs()
+        return self._ranker.retrieve_top_k(ranked_tweet_ids_as_list)
 
     def relevant_docs_from_posting(self, parsed_query):
         """
@@ -76,7 +78,7 @@ class Searcher:
         relevant_tweets_information = dict()
         for i in range(self._indexer.get_tweets_postings_counter()):
             tweets_postings_file = utils.load_obj(str(i + 1), self._indexer.get_config().get_tweets_postings_path())
-            for doc_id in relevant_tweets:  # todo inefficient goes over all docs every time for each postings file
+            for doc_id in relevant_tweets:
                 if doc_id in tweets_postings_file.keys():
                     relevant_tweets_information[doc_id] = tweets_postings_file[doc_id]
         return relevant_tweets_information

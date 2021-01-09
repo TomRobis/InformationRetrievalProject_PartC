@@ -5,7 +5,7 @@ from spell_checker import spell_checker
 
 
 import math
-from rankers.ranker import Ranker
+from rankers.cos_sim_ranker import Ranker
 import utils
 
 
@@ -45,7 +45,7 @@ class Searcher:
         if not relevant_tweets_with_information:
             return 0,0
         self._ranker = Ranker(sigma_Wiq_squared,Wiq_dict,relevant_tweets_with_information)
-        ranked_tweet_ids = self._ranker.rank_relevant_docs()
+        ranked_tweet_ids = self._ranker.rank_relevant_doc()
         return self._ranker.retrieve_top_k(ranked_tweet_ids)
 
     def get_sigma_wiq_and_relevant_words_in_query(self, query_as_list):

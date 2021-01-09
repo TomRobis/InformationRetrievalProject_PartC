@@ -1,5 +1,5 @@
 import math
-from rankers.ranker import Ranker
+from rankers.cos_sim_ranker import Ranker
 import utils
 
 
