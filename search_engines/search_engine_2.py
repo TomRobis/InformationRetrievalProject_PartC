@@ -1,11 +1,11 @@
 import pandas as pd
+
 import utils
-from configuration import ConfigClass
 from parser_classes.parsers.parser_module import Parse
 from indexers.indexer import Indexer
+from query_expandors.thesaurus_expandor import thesaurus_expandor
 from searchers.searcher import Searcher
-
-from query_expandors.wordnet_expandor import wordnet_expandor
+from configuration import ConfigClass
 
 
 # DO NOT CHANGE THE CLASS NAME
@@ -21,6 +21,13 @@ class SearchEngine:
         self._parser = Parse(config.get_stemming())
         self._indexer = Indexer(config)
         self._model = None
+
+        config.set_spell_checker(spell_checker=None)
+        config.set_query_expandor(query_expandor=thesaurus_expandor())
+
+        # create parent directories for postings
+        utils.create_parent_dir(config.get_stemming_dir_path())
+        utils.create_parent_dir(config.get_tweets_postings_path())
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -90,12 +97,6 @@ class SearchEngine:
 
 def main():
     config = ConfigClass()
-    config.set_spell_checker(spell_checker=None)
-    config.set_query_expandor(query_expandor=wordnet_expandor())
-
-    # create parent directories for postings
-    utils.create_parent_dir(config.get_stemming_dir_path())
-    utils.create_parent_dir(config.get_tweets_postings_path())
 
     se = SearchEngine(config)
     se.build_index_from_parquet(config.get_corpusPath())

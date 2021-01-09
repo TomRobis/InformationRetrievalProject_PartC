@@ -21,6 +21,13 @@ class SearchEngine:
         self._indexer = Indexer(config)
         self._model = None
 
+        config.set_spell_checker(spell_checker=spell_checker())
+        config.set_query_expandor(query_expandor=None)
+
+        # create parent directories for postings
+        utils.create_parent_dir(config.get_stemming_dir_path())
+        utils.create_parent_dir(config.get_tweets_postings_path())
+
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def build_index_from_parquet(self, fn):
@@ -89,12 +96,6 @@ class SearchEngine:
 
 def main():
     config = ConfigClass()
-    config.set_spell_checker(spell_checker=spell_checker())
-    config.set_query_expandor(query_expandor=None)
-
-    # create parent directories for postings
-    utils.create_parent_dir(config.get_stemming_dir_path())
-    utils.create_parent_dir(config.get_tweets_postings_path())
 
     se = SearchEngine(config)
     se.build_index_from_parquet(config.get_corpusPath())
