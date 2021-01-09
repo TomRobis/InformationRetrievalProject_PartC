@@ -1,10 +1,13 @@
-class i_query_expandor:
+from abc import ABC, abstractmethod
 
-    def expand_query(self,parsed_query) -> dict:
+
+class i_query_expandor(ABC):
+
+    @abstractmethod
+    def expand_query(self, parsed_query) -> dict:
         """
         interface for query expansion classes.
         :param parsed_query:
         :return:
         """
         pass
-

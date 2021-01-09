@@ -1,4 +1,3 @@
-import re
 
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -11,7 +10,7 @@ from parser_classes.tokenizers.URLTokenizer import URLTokenizer
 
 from stemmer import Stemmer
 from document import Document
-from re import search
+import re
 
 
 class Parse:
@@ -101,7 +100,7 @@ class Parse:
         :param token: token tested
         :return: bool: True if number else False
         """
-        return search("[0-9]", token) and (False if any(ord(c) > 57 or ord(c) < 44 for c in token) else True) and \
+        return re.search("[0-9]", token) and (False if any(ord(c) > 57 or ord(c) < 44 for c in token) else True) and \
                token.count('.') < 2 and token.count('/') < 2
 
     def create_term_doc_dict(self, tokenized_text):

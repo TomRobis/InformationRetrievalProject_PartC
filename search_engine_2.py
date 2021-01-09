@@ -3,14 +3,12 @@ import pandas as pd
 import utils
 from parser_classes.parsers.parser_module import Parse
 from indexers.indexer import Indexer
+from query_expandors.wordnet_expandor import wordnet_expandor
 from searchers.searcher import Searcher
 from configuration import ConfigClass
 
 
 # DO NOT CHANGE THE CLASS NAME
-from spell_checker import spell_checker
-
-
 class SearchEngine:
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -21,8 +19,8 @@ class SearchEngine:
         self._indexer = Indexer(config)
         self._model = None
 
-        config.set_spell_checker(spell_checker=spell_checker())
-        config.set_query_expandor(query_expandor=None)
+        config.set_spell_checker(spell_checker=None)
+        config.set_query_expandor(query_expandor=wordnet_expandor())
 
         # create parent directories for postings
         utils.create_parent_dir(config.get_stemming_dir_path())

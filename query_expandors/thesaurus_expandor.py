@@ -1,6 +1,7 @@
 from query_expandors.i_query_expandor import i_query_expandor
 from nltk.corpus import lin_thesaurus as thes
 
+
 class thesaurus_expandor(i_query_expandor):
 
     def expand_query(self, parsed_query) -> list:

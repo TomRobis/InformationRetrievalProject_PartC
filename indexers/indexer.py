@@ -33,8 +33,8 @@ class Indexer:
 
     def index_all_terms(self, document):
         """
-            indexes every term and writes terms postings to disc, if needed.
-            @return: int - max_tf = maximal number of appearances of term in tweet
+        indexes every term and writes terms postings to disc, if needed.
+        @return: int - max_tf = maximal number of appearances of term in tweet
         """
         document_dictionary = document.term_doc_dictionary
         self.average_doc_length += len(document_dictionary.keys())
