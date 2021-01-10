@@ -1,7 +1,7 @@
 import os
 
-from query_expandors.thesaurus_expander import thesaurus_expander
-from query_expandors.wordnet_expander import wordnet_expander
+from query_expanders.thesaurus_expander import thesaurus_expander
+from query_expanders.wordnet_expander import wordnet_expander
 
 
 class ConfigClass:

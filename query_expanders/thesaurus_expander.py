@@ -1,4 +1,4 @@
-from query_expandors.i_query_expander import i_query_expander
+from query_expanders.i_query_expander import i_query_expander
 from nltk.corpus import lin_thesaurus as thes
 
 

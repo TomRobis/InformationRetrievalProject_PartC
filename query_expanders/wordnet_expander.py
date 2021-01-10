@@ -1,6 +1,6 @@
 from nltk.corpus import wordnet
 
-from query_expandors.i_query_expander import i_query_expander
+from query_expanders.i_query_expander import i_query_expander
 
 
 class wordnet_expander(i_query_expander):

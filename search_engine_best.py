@@ -5,8 +5,8 @@ import pandas as pd
 import utils
 from parser_classes.parsers.parser_module import Parse
 from indexers.indexer import Indexer
-from query_expandors.thesaurus_expander import thesaurus_expander
-from query_expandors.wordnet_expander import wordnet_expander
+from query_expanders.thesaurus_expander import thesaurus_expander
+from query_expanders.wordnet_expander import wordnet_expander
 from searchers.searcher import Searcher
 from configuration import ConfigClass
 
@@ -98,21 +98,3 @@ class SearchEngine:
         n_res,res = searcher.search(query)
         # print('Finished searching and ranking...')
         return n_res,res
-
-
-def main():
-    config = ConfigClass()
-
-    se = SearchEngine(config)
-    se.build_index_from_parquet(config.get_corpusPath())
-
-    results = []
-    queries = pd.read_csv(os.path.join('data', 'queries_train.tsv'), sep='\t')
-    for i, row in queries.iterrows():
-        q_id = row['query_id']
-        q_keywords = row['keywords']
-        q_n_res, q_res = se.search(q_keywords)
-        q_res.append('\n')
-        results += q_res
-    # n_res, res = se.search('operation lockstep rockefeller')
-    utils.write_list_to_text_file("D:\\Python\\IR_Project\\Part_C\\data\\writing_to_texts_tests\\test.txt",results)

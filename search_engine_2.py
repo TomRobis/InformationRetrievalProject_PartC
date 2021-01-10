@@ -3,7 +3,7 @@ import pandas as pd
 import utils
 from parser_classes.parsers.parser_module import Parse
 from indexers.indexer import Indexer
-from query_expandors.wordnet_expander import wordnet_expander
+from query_expanders.wordnet_expander import wordnet_expander
 from searchers.searcher import Searcher
 from configuration import ConfigClass
 
