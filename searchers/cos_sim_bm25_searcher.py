@@ -1,6 +1,6 @@
 import math
 from rankers import cos_sim_ranker, bm25_ranker
-import utils
+from configurations import utils
 
 from rankers.multi_ranker import Ranker
 

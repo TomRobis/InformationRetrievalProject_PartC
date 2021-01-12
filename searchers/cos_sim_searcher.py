@@ -4,9 +4,8 @@
 
 import math
 
-from query_expanders.thesaurus_expander import thesaurus_expander
 from rankers.cos_sim_ranker import Ranker
-import utils
+from configurations import utils
 
 
 # DO NOT MODIFY CLASS NAME

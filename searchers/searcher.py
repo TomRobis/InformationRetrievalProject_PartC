@@ -1,8 +1,6 @@
 import math
-import utils
-from query_expanders.wordnet_expander import wordnet_expander
+from configurations import utils
 from rankers import bm25_ranker
-from query_expanders.thesaurus_expander import thesaurus_expander
 
 
 class Searcher:

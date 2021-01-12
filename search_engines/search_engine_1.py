@@ -1,10 +1,11 @@
 import pandas as pd
-import utils
+
+from configurations import utils
 from parser_classes.parsers.parser_module import Parse
 from indexers.indexer import Indexer
 from searchers.searcher import Searcher
-from configuration import ConfigClass
-from spell_checker import spell_checker
+from configurations.configuration import ConfigClass
+from imported_components.spell_checker import spell_checker
 
 
 # DO NOT CHANGE THE CLASS NAME
@@ -45,10 +46,13 @@ class SearchEngine:
             number_of_documents += 1
             # index the document data
             self._indexer.add_new_doc(parsed_document)
-        print('Finished parsing and indexing. commencing post processing...')
+        # print('Finished parsing and indexing. commencing post processing...')
         # make sure the postings and indexer are up to date
+
         self._indexer.post_process()
-        print('Finished post processing.')
+
+        # print('Finished post processing.')
+
         # self._indexer.save_index(fn=self._indexer.get_config().get_index_name())
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -90,7 +94,6 @@ class SearchEngine:
         # print('Finished searching and ranking...')
         return n_res,res
 
-
 def main():
     config = ConfigClass()
 
@@ -99,3 +102,6 @@ def main():
 
     n_res, res = se.search('operation lockstep rockefeller')
     print("Tweet id: {}".format(res))
+
+
+

@@ -1,4 +1,3 @@
-
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
@@ -8,8 +7,8 @@ from parser_classes.tokenizers.SuffixTokenizer import SuffixTokenizer
 from parser_classes.tokenizers.SymbolTokenizer import SymbolTokenizer
 from parser_classes.tokenizers.URLTokenizer import URLTokenizer
 
-from stemmer import Stemmer
-from document import Document
+from imported_components.stemmer import Stemmer
+from configurations.document import Document
 import re
 
 
@@ -29,6 +28,7 @@ class Parse:
              })
         self.useless_token_list = ['t.co', 'https', 'RT']
 
+
     def parse_sentence(self, text):
         """
         based on Factory Design Pattern, every token has a special tokenizer that parses it.
@@ -42,7 +42,6 @@ class Parse:
             token = text_tokens[i]
             if token not in self.useless_token_list:
                 # some terms are consisted of two tokens, in which case, the next token is skipped.
-
                 if i < len(text_tokens) - 1 and self.is_symbol(token, text_tokens[i + 1]):
                     parsed_tokens += self.string_to_tokenizer['symbol'].tokenize(token, text_tokens[i + 1])
                     i += 1
@@ -53,7 +52,6 @@ class Parse:
                     parsed_tokens += self.string_to_tokenizer['entity'].tokenize(token, text_tokens[i + 1])
                     i += 1
                 # while other terms are consisted of only one.
-
                 elif self.is_number(token):
                     parsed_tokens += self.string_to_tokenizer['number'].tokenize(token)
                 elif self.is_valid_token(token):
@@ -64,7 +62,7 @@ class Parse:
     def parse_doc(self, doc_as_list):
         """
         This function takes a tweet document as list and break it into different fields
-        :param doc_as_list: list re-preseting the tweet.
+        :param doc_as_list: list re-presenting the tweet.
         :return: Document object with corresponding fields.
         """
         tweet_id = doc_as_list[0]
@@ -78,6 +76,8 @@ class Parse:
         # quoted text should be parsed as well
         if quoted_text:
             full_text += ' ' + quoted_text
+
+
 
         # If either full URL exists, parse separately for terms.
         urls_tokens += ''.join(self.string_to_tokenizer['URL'].tokenize(urls))

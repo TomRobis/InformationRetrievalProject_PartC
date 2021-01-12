@@ -1,6 +1,6 @@
 import math
 
-import utils
+from configurations import utils
 
 
 # DO NOT MODIFY CLASS NAME

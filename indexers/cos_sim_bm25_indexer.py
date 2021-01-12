@@ -1,9 +1,7 @@
 # DO NOT MODIFY CLASS NAME
 import math
 
-import utils
-
-
+from configurations import utils
 
 
 class Indexer:
@@ -140,11 +138,11 @@ class Indexer:
         :return:
         """
         for i in range(self.tweets_postings_counter):
-            tweets_postings_file = utils.load_obj(str(i+1), self.config.get_tweets_postings_path())
+            tweets_postings_file = utils.load_obj(str(i + 1), self.config.get_tweets_postings_path())
             for doc_id in tweets_postings_file.keys():
                 tweet_posting = tweets_postings_file[doc_id]
                 self.update_single_tweet_postings(tweet_posting)
-            utils.save_obj(tweets_postings_file, str(i+1), self.config.get_tweets_postings_path())
+            utils.save_obj(tweets_postings_file, str(i + 1), self.config.get_tweets_postings_path())
 
     def update_single_tweet_postings(self, tweet_posting):
         """

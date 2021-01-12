@@ -4,15 +4,14 @@ if __name__ == '__main__':
     import re
     from datetime import datetime
     import pandas as pd
-    import pyarrow.parquet as pq
     import time
     import timeit
     import importlib
     import logging
 
-    logging.basicConfig(filename='part_c_tests.log', level=logging.DEBUG,
+    logging.basicConfig(filename='../part_c_tests.log', level=logging.DEBUG,
                         filemode='w', format='%(levelname)s %(asctime)s: %(message)s')
-    import metrics
+    from tests_files import metrics
 
 
     def test_file_exists(fn):
@@ -33,10 +32,10 @@ if __name__ == '__main__':
         return False
 
 
-    bench_data_path = os.path.join('data', 'benchmark_data_train.snappy.parquet')
-    bench_lbls_path = os.path.join('data', 'benchmark_lbls_train.csv')
-    queries_path = os.path.join('data', 'queries_train.tsv')
-    model_dir = os.path.join('.', 'model')
+    bench_data_path = os.path.join('../data', 'benchmark_data_train.snappy.parquet')
+    bench_lbls_path = os.path.join('../data', 'benchmark_lbls_train.csv')
+    queries_path = os.path.join('../data', 'queries_train.tsv')
+    model_dir = os.path.join('..', 'model')
 
     start = datetime.now()
     try:
@@ -60,16 +59,16 @@ if __name__ == '__main__':
         if not test_file_exists(queries_path):
             logging.error("Queries data not found ~> skipping some tests.")
         else:
-            queries = pd.read_csv(os.path.join('data', 'queries_train.tsv'), sep='\t')
+            queries = pd.read_csv(os.path.join('../data', 'queries_train.tsv'), sep='\t')
             logging.info("Successfully loaded queries data.")
 
-        import configuration
+        from configurations import configuration, utils
+
         config = configuration.ConfigClass()
         
         # do we need to download a pretrained model?
         model_url = config.get_model_url()
         if model_url is not None and config.get_download_model():
-            import utils
             dest_path = 'model.zip'
             utils.download_file_from_google_drive(model_url, dest_path)
             if not os.path.exists(model_dir):
@@ -161,10 +160,10 @@ if __name__ == '__main__':
                     # precision@5, precision@10, precision@50, and recall 
                     # is in [0,1].
                     prec, p5, p10, p50, recall = \
-                        metrics.precision(q_results_labeled),\
-                        metrics.precision(q_results_labeled.groupby('query').head(5)),\
-                        metrics.precision(q_results_labeled.groupby('query').head(10)),\
-                        metrics.precision(q_results_labeled.groupby('query').head(50)),\
+                        metrics.precision(q_results_labeled), \
+                        metrics.precision(q_results_labeled.groupby('query').head(5)), \
+                        metrics.precision(q_results_labeled.groupby('query').head(10)), \
+                        metrics.precision(q_results_labeled.groupby('query').head(50)), \
                         metrics.recall(q_results_labeled, q2n_relevant)
                     logging.debug(f"{engine_module} results produced average precision of {prec}.")
                     logging.debug(f"{engine_module} results produced average precision@5 of {p5}.")

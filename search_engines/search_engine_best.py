@@ -1,14 +1,11 @@
-import os
-
 import pandas as pd
 
-import utils
+from configurations import utils
 from parser_classes.parsers.parser_module import Parse
 from indexers.indexer import Indexer
 from query_expanders.thesaurus_expander import thesaurus_expander
-from query_expanders.wordnet_expander import wordnet_expander
 from searchers.searcher import Searcher
-from configuration import ConfigClass
+from configurations.configuration import ConfigClass
 
 
 # DO NOT CHANGE THE CLASS NAME
@@ -50,7 +47,6 @@ class SearchEngine:
             number_of_documents += 1
             # index the document data
             self._indexer.add_new_doc(parsed_document)
-
         # print('Finished parsing and indexing. commencing post processing...')
 
         # make sure the postings and indexer are up to date
@@ -98,3 +94,12 @@ class SearchEngine:
         n_res,res = searcher.search(query)
         # print('Finished searching and ranking...')
         return n_res,res
+
+def main():
+    config = ConfigClass()
+
+    se = SearchEngine(config)
+    se.build_index_from_parquet(config.get_corpusPath())
+
+    n_res, res = se.search('operation lockstep rockefeller')
+    print("Tweet id: {}".format(res))

@@ -18,11 +18,11 @@ class ConfigClass:
         '''
         self._download_model = False
 
-        self.corpusPath = os.path.join('data', 'benchmark_data_train.snappy.parquet')  # todo what is corpus path?
+        self.corpusPath = os.path.join('../data', 'benchmark_data_train.snappy.parquet')  # todo what is corpus path?
         self.savedFileMainFolder = ''  # todo which value does this have?
 
         self.stemming = True
-        self.saveFilesWithStem = os.path.join(self.savedFileMainFolder, "WithStem")  # todo is this needed
+        self.saveFilesWithStem = os.path.join(self.savedFileMainFolder, "../WithStem")  # todo is this needed
 
         self.tweets_postings_path = os.path.join(self.saveFilesWithStem, 'tweet_postings')
 
@@ -32,7 +32,7 @@ class ConfigClass:
         #  threshold for file sizes, relates to number of terms kept in each posting
         self.OPTIMAL_TWEETS_FILE_SIZE = 100000
 
-        self.index_name = os.path.join(self.saveFilesWithStem, 'idx_bench.pkl')  # todo save this in curr dir or not?
+        self.index_name = os.path.join(self.saveFilesWithStem, '../idx_bench.pkl')  # todo save this in curr dir or not?
 
         self.log_basis_for_idf = 2
         self.bm25_k = 1.2  # [1.2,2]
